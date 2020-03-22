@@ -5,5 +5,5 @@ module.exports = {
     mongodbPORT: process.env.MONGODB_PORT, 
     mongoUser: process.env.MONGODB_USER, 
     mongoPassword: process.env.MONGODB_PASS,
-    mongoURI: "mongodb://"+ mongoUser + ":" + mongoPassword+ "@" + mongodbHOST+":" + mongodbPORT
+    mongoURI: "mongodb://mongo:27017/devicefarm"
 }

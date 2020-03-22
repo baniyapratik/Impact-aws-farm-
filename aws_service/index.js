@@ -7,10 +7,9 @@ const cors = require('cors');
 const redis = require('redis');
 
 // mongodb setup
-mongoose.Promise = global.Promise;
-mongoose.connect(keys.mongoURI, { useMongoClient: true }).then(()=>{
-    console.log("mongodb connect success");
-});
+mongoose.connect(keys.mongoURI,  { useNewUrlParser: true })
+.then(()=> console.log("mongodb connect success"))
+.catch(err => console.log(err));
 
 // redis client setup
 const redisClient = redis.createClient({
