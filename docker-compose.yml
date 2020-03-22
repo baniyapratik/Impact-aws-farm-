@@ -1,0 +1,38 @@
+version: '3'
+services: 
+  mongodb: 
+    image: 'mongo'
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password123
+
+  redis: 
+    image: 'redis:latest'
+
+  aws_service:
+    depends_on:
+      - mongodb
+      - redis
+    build:
+      dockerfile: Dockerfile
+      context: ./aws_service
+    volumes: 
+      - /aws_app/node_modules
+      - ./aws_service:/aws_app
+    environment: 
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - MONGODB_HOST=mongodb
+      - MONGODB_PORT=37017
+      - MONGODB_USER=root
+      - MONGODB_PASS=password123
+
+  nginx: 
+    depend_on:
+      - aws_service
+    restart: always
+    build: 
+      build:
+        dockerfile: Dockerfile
+        context: ./nginx
