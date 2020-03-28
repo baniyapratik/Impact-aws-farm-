@@ -37,7 +37,7 @@ if (cluster.isMaster) {
         res.send("Hello world");
     })
 
-    app.post("/aws-service/test-service/uploadapk", uploadAPK);
+    app.post("/aws-testrunner/uploadapk", uploadAPK);
     
     const PORT = keys.PORT || 5000;
     app.listen(PORT, ()=>{
