@@ -9,7 +9,7 @@ const { Schema } = mongoose;
 
 const testSchema = new Schema({
     awsRunId: String,
-    _test: '',
+    name: String,
     type: {
         type: String,
         enum: ['Physical', 'Virtual'],
@@ -29,7 +29,22 @@ const testSchema = new Schema({
         default: 'none'
     },
     started: { type: Date, default: Date.now},
-    stopped: Date
+    stopped: Date,
+    counters:[{
+        total: Integer,
+        passed: Integer,
+        failed: Integer,
+        warned: Integer,
+        errored: Integer,
+        stopped: Integer,
+        skipped: Integer
+    }],
+    message: String,
+    deviceMinutes:[{
+        total: Float32Array,
+        metered: Float32Array,
+        unmetered: Float32Array
+    }]
 });
 
 mongoose.model('Test', testSchema);
