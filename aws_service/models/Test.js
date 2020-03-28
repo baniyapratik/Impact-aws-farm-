@@ -13,7 +13,7 @@ const testSchema = new Schema({
     type: {
         type: String,
         enum: ['Physical', 'Virtual'],
-        default: "Virtual"
+        default: "Physical"
     },
     created: { type: Date, default: Date.now },
     status: {
@@ -30,15 +30,6 @@ const testSchema = new Schema({
     },
     started: { type: Date, default: Date.now},
     stopped: Date,
-    counters:[{
-        total: Integer,
-        passed: Integer,
-        failed: Integer,
-        warned: Integer,
-        errored: Integer,
-        stopped: Integer,
-        skipped: Integer
-    }],
     message: String,
     deviceMinutes:[{
         total: Float32Array,
