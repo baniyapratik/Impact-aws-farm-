@@ -11,6 +11,14 @@ services:
     restart: always
     ports: 
       - "6379:6379"
+  
+  client:
+    build:
+      dockerfile: Dockerfile
+      context: ./client
+    volumes:
+      - /app/node_modules
+      - ./client:/app
 
   aws_service:
     depends_on:
@@ -38,7 +46,10 @@ services:
   nginx: 
     depends_on:
       - aws_service
+      - client
     restart: always
     build: 
       dockerfile: Dockerfile
       context: ./nginx
+    ports:
+      - "8080:80"

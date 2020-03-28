@@ -6,8 +6,12 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const redis = require('redis');
 
+// import the models
+require('./models/Project');
+
+
 // mongodb setup
-mongoose.connect(keys.mongoURI,  { useNewUrlParser: true })
+mongoose.connect(keys.mongoURI,   { useUnifiedTopology: true,  useNewUrlParser: true })
 .then(()=> console.log("mongodb connect success"))
 .catch(err => console.log(err));
 
@@ -26,9 +30,13 @@ if (cluster.isMaster) {
     app.use(bodyParser.json());
     app.use(cors());
 
-    app.get('/', (req, res)=>{
-        res.send("Hello");
+    // import the routes
+    //require('./routes/projectRoutes')(app);
+
+    app.get('/aws-service/test-service', (req, res)=>{
+        res.send("Hello world");
     })
+    
     const PORT = keys.PORT || 5000;
     app.listen(PORT, ()=>{
         console.log(`Listening on port`, PORT)
