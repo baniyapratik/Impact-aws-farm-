@@ -5,10 +5,10 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const redis = require('redis');
+const uploadAPK = require("./routes/uploadAPK");
 
 // import the models
 require('./models/Project');
-
 
 // mongodb setup
 mongoose.connect(keys.mongoURI,   { useUnifiedTopology: true,  useNewUrlParser: true })
@@ -36,6 +36,8 @@ if (cluster.isMaster) {
     app.get('/aws-service/test-service', (req, res)=>{
         res.send("Hello world");
     })
+
+    app.post("/aws-service/test-service/uploadapk", uploadAPK);
     
     const PORT = keys.PORT || 5000;
     app.listen(PORT, ()=>{
