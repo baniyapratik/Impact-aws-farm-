@@ -15,6 +15,27 @@ module.exports = (app) => {
         });
         res.send(testPackage);
     });
+    /**
+     * Delete test by test id
+     */
+    app.delete('/aws-service/projects/:projectid/testsuite/:testsuiteid/test-package/:testid', async (req, res)=>{
+        var testid = req.params.testid;
+        const testPackage = await Test.findOne({
+            _id: testid
+        });
+
+        var params = {
+            arn: testPackage.testArn
+        }
+
+        deviceFarm.deleteUpload(params, async function(err, data) {
+            if (err) console.log(err, err.stack); // an error occurred
+            else   {
+                await testPackage.delete();
+                res.status(200).send('Done');
+            }
+          });
+    });
 
     /**
      * Get test by id
@@ -28,9 +49,13 @@ module.exports = (app) => {
     });
 
     /**
-     * Upload the test
-     * 
-     * ## payload
+    Upload the test
+     
+    ## payload
+    {
+        "title": "Test Package",
+        "type" : "APPIUM_PYTHON_TEST_PACKAGE"
+    }
      */
     app.post('/aws-service/projects/:projectid/testsuite/:testsuiteid/test-package/user/:userid', async (req, res)=>{
         const { title, type } = req.body;
