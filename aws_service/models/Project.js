@@ -1,13 +1,9 @@
 const mongoose = require('mongoose');
-const { Schema} = mongoose;
+const { Schema } = mongoose;
 
 const projectSchema = new Schema({
     title: String, 
-    type: {
-        type: String,
-        enum: ['Physical', 'Virtual'],
-        default: "Virtual"
-    },    
+    arn: String,    
     description: String,
     createdAt: { type: Date, default: Date.now},
     _user: String,

@@ -1,3 +1,4 @@
+
 const cluster = require('cluster');
 const express = require('express');
 const keys = require('./config/keys');
@@ -8,7 +9,8 @@ const redis = require('redis');
 
 // import the models
 require('./models/Project');
-
+require('./models/TestSuite');
+require('./models/Test');
 
 // mongodb setup
 mongoose.connect(keys.mongoURI,   { useUnifiedTopology: true,  useNewUrlParser: true })
@@ -22,6 +24,8 @@ const redisClient = redis.createClient({
     retry_strategy: () => 1000
 });
 
+
+
 if (cluster.isMaster) {
     cluster.fork();
     cluster.fork();
@@ -31,7 +35,9 @@ if (cluster.isMaster) {
     app.use(cors());
 
     // import the routes
-    //require('./routes/projectRoutes')(app);
+    require('./routes/projectRoutes')(app);
+    require('./routes/testSuiteRoutes')(app);
+    require('./routes/testPackageRoutes')(app);
 
     app.get('/aws-service/test-service', (req, res)=>{
         res.send("Hello world");
