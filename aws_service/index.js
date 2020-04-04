@@ -38,6 +38,7 @@ if (cluster.isMaster) {
     require('./routes/projectRoutes')(app);
     require('./routes/testSuiteRoutes')(app);
     require('./routes/testPackageRoutes')(app);
+    require('./routes/resourceTagging')(app);
 
     app.get('/aws-service/test-service', (req, res)=>{
         res.send("Hello world");
