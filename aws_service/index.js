@@ -49,7 +49,7 @@ if (cluster.isMaster) {
         res.send("Hello world");
     });
 
-    app.use(require('./routes/testUpload'));
+    app.use(require('./routes/testRunnerRoutes'));
 
     const PORT = keys.PORT || 5000;
     app.listen(PORT, () => {
