@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import VerticalTabs from './VerticalTabs';
+import ListRuns from './ListRuns';
 import './modal.css';
 
 class CreateTest extends Component {
@@ -20,7 +21,7 @@ class CreateTest extends Component {
                     show={this.state.show}
                     onHide={() => this.setState({ show: false })}
                     dialogClassName="modal-90w"
-                    style={{width: '50%', position: 'fixed', left: '25%'}}
+                    style={{ width: '50%', position: 'fixed', left: '25%' }}
                     aria-labelledby="example-custom-modal-styling-title"
                 >
                     <Modal.Header closeButton>
@@ -34,6 +35,9 @@ class CreateTest extends Component {
                         </div>
                     </Modal.Body>
                 </Modal>
+                <div>
+                    <ListRuns />
+                </div>
             </div>
         )
     }

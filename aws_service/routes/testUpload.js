@@ -250,13 +250,14 @@ async function tagResource(resourceArn, tags) {
 
 router.get('/aws-testrunner/listruns', (req, res) => {
 
-    let projectArn = req.body;
+    //let projectArn = req.body;
+    let projectArn = 'arn:aws:devicefarm:us-west-2:501375891658:project:a1492621-3550-4b69-990b-72657904499a';
 
     deviceFarm.listRuns({ arn: projectArn }, function (err, data) {
         if (err) console.log(err, err.stack); // an error occurred
         else {
             console.log(data); // successful response
-            //res.send(data);
+            res.status(200).send(data);
         }
     });
 });
