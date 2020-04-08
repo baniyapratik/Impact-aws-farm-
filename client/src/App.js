@@ -2,17 +2,10 @@
 import React, { Component } from 'react';
 import {Route, BrowserRouter as Router} from 'react-router-dom';
 import AuthenticationPage from './components/authentication/Authentication'
-import React from 'react';
 import TestCaseUpload from './components/TestCase/TestCaseUpload';
-import CreateRun from "./components/TestRunner/CreateRun";
-import { Route, BrowserRouter as Router } from 'react-router-dom';
-
+import CreateRun from './components/TestRunner/CreateRun';
 
 class App extends Component {
-  componentDidMount(){
-    
-  }
- 
   render() {
    return (
     <Router>
