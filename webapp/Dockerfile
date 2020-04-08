@@ -1,5 +1,5 @@
 FROM node:alpine
-WORKDIR /aws_service
+WORKDIR /webapp
 COPY ./package*.json ./
 RUN npm install
 COPY ./ ./
