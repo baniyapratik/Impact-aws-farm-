@@ -1,8 +1,13 @@
+
+
 # dependencies
 /webapp/node_modules
+/webapp/package-lock.json
+/client/node_modules
 /node_modules
-/.pnp
-.pnp.js
+/*.pnp
+/*.pnp.js
+
 
 # testing
 /coverage
