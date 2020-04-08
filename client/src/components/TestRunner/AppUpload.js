@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { Form } from 'react-bootstrap';
+import { Col, Nav, Tab, Row, Form, Button } from 'react-bootstrap';
 import axios from 'axios';
 
 class AppUpload extends Component {
     constructor(props) {
         super(props);
+        this.handleUploadFile = this.handleUploadFile.bind(this);
     }
 
     handleUploadFile = (event) => {
@@ -14,9 +15,6 @@ class AppUpload extends Component {
         // '/files' is your node.js route that triggers our middleware
         axios.post('/aws-testrunner/createUpload', data).then((response) => {
             console.log(response); // do something with the response
-            if(response.status == 200) {
-                this.props.action();
-            }
         });
     }
 
