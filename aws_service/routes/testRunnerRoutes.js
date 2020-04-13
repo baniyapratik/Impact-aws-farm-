@@ -10,7 +10,6 @@ const request = require('request');
 const path = require('path');
 const sleep = (waitTimeInMs) => new Promise(resolve => setTimeout(resolve, waitTimeInMs));
 
-//multer S3 instead of local storage (will be used during integration/deployment)
 const upload = multer({
     storage: multerS3({
         s3: s3,
@@ -209,6 +208,7 @@ router.post('/aws-testrunner/run', async (req, res) => {
                         await sleep(50000);
                         runStatus = await getRun(data.arn);
                     }
+                    console.log('TEST RUN COMPLETED!');
                     //create resource tag
                     let resourceArn = data.arn;
                     let tags = {
@@ -254,6 +254,19 @@ router.get('/aws-testrunner/listruns', (req, res) => {
     let projectArn = 'arn:aws:devicefarm:us-west-2:501375891658:project:a1492621-3550-4b69-990b-72657904499a';
 
     deviceFarm.listRuns({ arn: projectArn }, function (err, data) {
+        if (err) console.log(err, err.stack); // an error occurred
+        else {
+            console.log(data); // successful response
+            res.status(200).send(data);
+        }
+    });
+});
+
+router.get('/aws-testrunner/getrun/*', (req, res) => {
+
+    let runArn = Object.values(req.params)[0];
+    console.log(runArn);
+    deviceFarm.getRun({ arn: runArn }, function (err, data) {
         if (err) console.log(err, err.stack); // an error occurred
         else {
             console.log(data); // successful response

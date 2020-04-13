@@ -3,6 +3,7 @@ import { Route, BrowserRouter as Router } from 'react-router-dom';
 import AuthenticationPage from './components/authentication/Authentication';
 import TestCaseUpload from './components/TestCase/TestCaseUpload';
 import CreateRun from './components/TestRunner/CreateRun';
+import GetRun from './components/TestRunner/GetRun';
 
 class App extends Component {
   componentDidMount() {}
@@ -20,6 +21,7 @@ class App extends Component {
           <div>
             <Route path="/upload-test-case" component={TestCaseUpload} />
             <Route path="/createrun" component={CreateRun} />
+            <Route path="/run/:id/:id2" component={GetRun} />
           </div>
         </div>
       </Router>

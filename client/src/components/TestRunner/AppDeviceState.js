@@ -6,15 +6,6 @@ class AppDeviceState extends Component {
         super(props);
     }
 
-    handleUploadFile = (event) => {
-        /*
-        const data = new FormData();
-        data.append('file', event.target.files[0]);
-        axios.post('/aws-testrunner/createUpload', data).then((response) => {
-            console.log(response); // do something with the response
-        });*/
-    }
-
     render() {
         return (
             <div>

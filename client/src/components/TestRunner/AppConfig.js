@@ -9,6 +9,7 @@ class AppUpload extends Component {
             upload: false,
             testType: ''
         }
+        this.handleUploadFile = this.handleUploadFile.bind(this);
     }
 
     handleChange = (e) => {
@@ -33,9 +34,14 @@ class AppUpload extends Component {
         let enableUpload = null;
         if (this.state.upload) {
             enableUpload =
-                <div>
-                    <input type="file" onChange={this.handleUploadFile.bind(this)} />
-                </div>
+                <Form>
+                    <Form.File
+                        id="custom-file"
+                        label="Choose File"
+                        onChange={this.handleUploadFile}
+                        custom
+                    />
+                </Form>
         } else {
             enableUpload =
                 <div><i>No tests? No problem. We'll fuzz test your app by sending random events to it with no scripts required.</i></div>
