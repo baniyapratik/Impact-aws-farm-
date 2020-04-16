@@ -16,7 +16,7 @@ class AppUpload extends Component {
         axios.post('/aws-testrunner/createUpload', data).then((response) => {
             console.log(response); // do something with the response
             if (response.status == 200) {
-                this.props.action();
+                this.props.tabsHandler(true);
             }
         });
     }

@@ -10,6 +10,7 @@ const request = require('request');
 const path = require('path');
 const sleep = (waitTimeInMs) => new Promise(resolve => setTimeout(resolve, waitTimeInMs));
 
+//multer S3 instead of local storage (will be used during integration/deployment)
 const upload = multer({
     storage: multerS3({
         s3: s3,
@@ -149,42 +150,31 @@ async function getDevicePools(runName) {
     }
 
     return await deviceFarm.listDevicePools(params).promise().then(
-        function (data) {
-            if (data) {
-                //res.status(200).send("Devices listed!");
-                Upload.findOne({ appName: runName }, (err, app) => {
-                    if (err) console.log(err, err.stack); // an error occurred
-                    else if (app) {
-                        console.log(data);
-                        //default TOP-devices for now, user may create custom later
-                        app.deviceArn = data.devicePools[0].arn;
-                        app.save((err) => {
-                            if (err) console.log(err, err.stack); // an error occurred
-                            else {
-                                console.log("Device saved to MongoDB status: 'SUCCEEDED'");
-                                return "SUCCEEDED";
-                            }
-                        });
-                    }
-                });
-            }
+        async function (data) {
+            //res.status(200).send("Devices listed!");
+            await Upload.findOne({ appName: runName }, (err, app) => {
+                if (err) console.log(err, err.stack); // an error occurred
+                else if (app) {
+                    console.log(data);
+                    //default TOP-devices for now, user may create custom later
+                    app.deviceArn = data.devicePools[0].arn;
+                    app.save((err) => {
+                        if (err) console.log(err, err.stack); // an error occurred
+                        else {
+                            console.log("Device saved to MongoDB status: 'SUCCEEDED'");
+                        }
+                    });
+                }
+            });
+            return "SUCCEEDED";
         }, function (error) {
             console.error("Upload status: ERROR", error);
         }
     );
 }
 
-
-
-router.post('/aws-testrunner/run', async (req, res) => {
-
-    let getDeviceStatus = await getDevicePools(req.session.runName);
-    while (getDeviceStatus !== "SUCCEEDED") {
-        console.log("Re-attempt get device status: " + getDeviceStatus);
-        await sleep(5000);
-        getDeviceStatus = await getDevicePools(req.session.runName);
-    }
-    Upload.findOne({ appName: req.session.runName }, (err, run) => {
+async function scheduleRun(runName) {
+    await Upload.findOne({ appName: runName }, (err, run) => {
         if (err) console.log(err, err.stack); // an error occurred
         else if (run) {
             var testType = run.testPackage.type.replace("_TEST_PACKAGE", "");
@@ -201,15 +191,15 @@ router.post('/aws-testrunner/run', async (req, res) => {
 
             deviceFarm.scheduleRun(params, async function (err, data) {
                 if (err) console.log(err, err.stack); // an error occurred
-                else {
-                    console.log(data);// successful response
+                else if (data) {
+                    console.log(data);  // successful response
                     let runStatus = await getRun(data.arn);
                     while (runStatus !== "COMPLETED") {
                         await sleep(50000);
                         runStatus = await getRun(data.arn);
                     }
                     console.log('TEST RUN COMPLETED!');
-                    //create resource tag
+                    //apply resource tag
                     let resourceArn = data.arn;
                     let tags = {
                         projectName: "Impact",
@@ -220,19 +210,16 @@ router.post('/aws-testrunner/run', async (req, res) => {
             });
         }
     });
-
-});
+}
 
 async function getRun(runArn) {
 
     return await devicefarm.getRun({ arn: runArn }, function (err, data) {
         if (err) console.log(err, err.stack); // an error occurred
-        else {
-            console.log(data); // successful response
-            return data.status;
-        }
+        return data.status;
     });
 }
+
 
 async function tagResource(resourceArn, tags) {
     var params = {
@@ -247,6 +234,17 @@ async function tagResource(resourceArn, tags) {
         }
     });
 }
+
+router.post('/aws-testrunner/run', async (req, res) => {
+
+    let getDeviceStatus = await getDevicePools(req.session.runName);
+    while (getDeviceStatus !== "SUCCEEDED") {
+        console.log("Re-attempt get device status: 'PROCESSING'");
+        await sleep(5000);
+        getDeviceStatus = await getDevicePools(req.session.runName);
+    }
+    scheduleRun(req.session.runName);
+});
 
 router.get('/aws-testrunner/listruns', (req, res) => {
 

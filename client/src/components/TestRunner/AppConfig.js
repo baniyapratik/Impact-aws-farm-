@@ -15,7 +15,9 @@ class AppUpload extends Component {
     handleChange = (e) => {
         if (e.target.value != 'BUILTIN_FUZZ' && e.target.value != 'BUILTIN_EXPLORER') {
             this.setState({ upload: true, testType: e.target.value });
+            this.props.tabsHandler(false);
         } else {
+            this.props.tabsHandler(true);
             this.setState({ upload: false });
         }
     }
@@ -27,6 +29,7 @@ class AppUpload extends Component {
         // '/files' is your node.js route that triggers our middleware
         axios.post('/aws-testrunner/createUpload', data).then((res) => {
             console.log(res); // do something with the response
+            this.props.tabsHandler(true);
         });
     }
 

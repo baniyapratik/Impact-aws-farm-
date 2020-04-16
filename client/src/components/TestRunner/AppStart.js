@@ -32,7 +32,7 @@ class AppStart extends Component {
                         </Accordion.Toggle>
                         </Card.Header>
                         <Accordion.Collapse eventKey="0">
-                            <Card.Body><strong>Name</strong> test123.apk</Card.Body>
+                            <Card.Body><strong>Name</strong> demo.apk</Card.Body>
                         </Accordion.Collapse>
                     </Card>
                     <Card>
