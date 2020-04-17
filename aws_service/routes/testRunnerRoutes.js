@@ -1,7 +1,7 @@
 const express = require('express');
 const Upload = require('../models/TestRunnerSchema/Upload');
 const deviceFarm = require('../services/deviceFarm');
-const resourceTagging = require('../services/resourceTagging');
+//const resourceTagging = require('../services/resourceTagging');
 const s3 = require('../services/s3');
 const router = express.Router();
 const multer = require('multer');
@@ -174,6 +174,7 @@ async function getDevicePools(runName) {
 }
 
 async function scheduleRun(runName) {
+
     await Upload.findOne({ appName: runName }, (err, run) => {
         if (err) console.log(err, err.stack); // an error occurred
         else if (run) {
@@ -193,19 +194,19 @@ async function scheduleRun(runName) {
                 if (err) console.log(err, err.stack); // an error occurred
                 else if (data) {
                     console.log(data);  // successful response
-                    let runStatus = await getRun(data.arn);
+                    let runStatus = await getRun(data.run.arn);
                     while (runStatus !== "COMPLETED") {
-                        await sleep(50000);
-                        runStatus = await getRun(data.arn);
+                        await sleep(60000);
+                        runStatus = await getRun(data.run.arn);
                     }
-                    console.log('TEST RUN COMPLETED!');
+                    /*
                     //apply resource tag
                     let resourceArn = data.arn;
                     let tags = {
                         projectName: "Impact",
                         type: "testrun"
                     }
-                    tagResource(resourceArn, tags);
+                    tagResource(resourceArn, tags);*/
                 }
             });
         }
@@ -213,10 +214,13 @@ async function scheduleRun(runName) {
 }
 
 async function getRun(runArn) {
-
-    return await devicefarm.getRun({ arn: runArn }, function (err, data) {
+    return await deviceFarm.getRun({ arn: runArn }, function (err, data) {
         if (err) console.log(err, err.stack); // an error occurred
-        return data.status;
+        else if (data.run.status === "COMPLETED") {
+            console.log('TEST RUN COMPLETED!');
+        }
+        console.log("Get run status: " + data.run.status);
+        return data.run.status;
     });
 }
 

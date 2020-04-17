@@ -10,9 +10,10 @@ class CreateTest extends Component {
         this.state = {
             show: false
         }
+        this.closeModal = this.closeModal.bind(this);
     }
 
-    handleChange() {
+    closeModal() {
         this.setState({ show: false });
     }
 
@@ -42,7 +43,7 @@ class CreateTest extends Component {
                     </Modal.Header>
                     <Modal.Body>
                         <div>
-                            <VerticalTabs />
+                            <VerticalTabs closeModal={this.closeModal} />
                         </div>
                     </Modal.Body>
                 </Modal>

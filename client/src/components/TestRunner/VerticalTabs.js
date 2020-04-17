@@ -9,10 +9,11 @@ import AppDeviceState from './AppDeviceState';
 class VerticalTabs extends Component {
   constructor(props) {
     super(props);
-    this.tabsHandler = this.tabsHandler.bind(this);
     this.state = {
       tabsEnabled: false
     }
+    this.tabsHandler = this.tabsHandler.bind(this);
+    this.handleModal = this.handleModal.bind(this);
   }
 
   tabsHandler(arg) {
@@ -23,6 +24,11 @@ class VerticalTabs extends Component {
       console.log('tabs disabled!');
       this.setState({ tabsEnabled: arg });
     }
+  }
+
+  handleModal() {
+    console.log('YO');
+    this.props.closeModal();
   }
 
   render() {
@@ -85,7 +91,7 @@ class VerticalTabs extends Component {
                   <AppDeviceState />
                 </Tab.Pane>
                 <Tab.Pane eventKey="fifth">
-                  <AppStart />
+                  <AppStart handleModal={this.handleModal} />
                 </Tab.Pane>
               </Tab.Content>
             </Col>
