@@ -1,38 +1,14 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
-import { Pie } from "react-chartjs-2";
-import { MDBContainer } from "mdbreact";
+import CanvasJSReact from '../../assets/canvasjs.react';
+var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 class GetRun extends Component {
     constructor(props) {
         super(props);
         this.state = {
             run: [],
-            dataPie: {
-                labels: ["FAILED", "PASSED", "SKIPPED", "WARNED", "STOPPED"],
-                datasets: [
-                    {
-                        data: [],
-                        backgroundColor: [
-                            "#F7464A",
-                            "#46BFBD",
-                            "#FDB45C",
-                            "#949FB1",
-                            "#4D5360",
-                            "#AC64AD"
-                        ],
-                        hoverBackgroundColor: [
-                            "#FF5A5E",
-                            "#5AD3D1",
-                            "#FFC870",
-                            "#A8B3C5",
-                            "#616774",
-                            "#DA92DB"
-                        ]
-                    }
-                ]
-            }
+            pieChart: {}
         }
     }
 
@@ -41,6 +17,7 @@ class GetRun extends Component {
         axios.get('/aws-testrunner/getrun/' + arn)
             .then(res => {
                 this.setState({ run: res.data });
+                this.setState({ pieChart: { dataPoints: [{ y: 5, label: 'b' }] } });
             }).catch((err) => {
                 console.log(err);
             });
@@ -52,11 +29,45 @@ class GetRun extends Component {
             if (this.state.run[i].deviceMinutes) {
                 totalMins = <td>{this.state.run[i].deviceMinutes.total}</td>
             }
-            { this.state.dataPie.datasets[0].data[0] = this.state.run[i].counters.failed }
-            { this.state.dataPie.datasets[0].data[1] = this.state.run[i].counters.passed }
-            { this.state.dataPie.datasets[0].data[2] = this.state.run[i].counters.skipped }
-            { this.state.dataPie.datasets[0].data[3] = this.state.run[i].counters.warned }
-            { this.state.dataPie.datasets[0].data[4] = this.state.run[i].counters.stopped }
+            this.state.pieChart = {
+                theme: "dark2",
+                animationEnabled: true,
+                exportFileName: "Result",
+                exportEnabled: true,
+                title: {
+                    text: "Test Result"
+                },
+                data: [{
+                    type: "pie",
+                    showInLegend: true,
+                    legendText: "{label}",
+                    toolTipContent: "{label}: <strong>{y} cases</strong>",
+                    indexLabel: "{y}",
+                    indexLabelPlacement: "inside",
+                    dataPoints: []
+                }]
+            }
+
+            let test = this.state.run[i].counters;
+            if (test.failed != 0) {
+                this.state.pieChart.data[0].dataPoints.push({ y: test.failed, label: 'FAILED' });
+            }
+            if (test.passed != 0) {
+                this.state.pieChart.data[0].dataPoints.push({ y: test.passed, label: 'PASSED' });
+            }
+            if (test.skipped != 0) {
+                this.state.pieChart.data[0].dataPoints.push({ y: test.skipped, label: 'SKIPPED' });
+            }
+            if (test.warned != 0) {
+                this.state.pieChart.data[0].dataPoints.push({ y: test.warned, label: 'WARNED' });
+            }
+            if (test.stopped != 0) {
+                this.state.pieChart.data[0].dataPoints.push({ y: test.stopped, label: 'STOPPED' });
+            }
+            if (test.errored != 0) {
+                this.state.pieChart.data[0].dataPoints.push({ y: test.errored, label: 'ERRORED' });
+            }
+
             return (
                 <div key={index}>
                     <table id="runs">
@@ -86,9 +97,7 @@ class GetRun extends Component {
         return (
             <div>
                 {this.renderRuns()}
-                <MDBContainer>
-                    <Pie data={this.state.dataPie} options={{ responsive: true }} />
-                </MDBContainer>
+                <CanvasJSChart options={this.state.pieChart} />
             </div>
         )
     }

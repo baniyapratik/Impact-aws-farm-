@@ -1,5 +1,6 @@
 const express = require('express');
 const Upload = require('../models/TestRunnerSchema/Upload');
+//const TestResult = require('../models/TestRunnerSchema/TestResult');
 const deviceFarm = require('../services/deviceFarm');
 //const resourceTagging = require('../services/resourceTagging');
 const s3 = require('../services/s3');
@@ -9,6 +10,8 @@ const multerS3 = require('multer-s3');
 const request = require('request');
 const path = require('path');
 const sleep = (waitTimeInMs) => new Promise(resolve => setTimeout(resolve, waitTimeInMs));
+//will be replaced by create project (when integrated)
+const projectArn = 'arn:aws:devicefarm:us-west-2:501375891658:project:a1492621-3550-4b69-990b-72657904499a';
 
 //multer S3 instead of local storage (will be used during integration/deployment)
 const upload = multer({
@@ -98,7 +101,7 @@ router.post('/aws-testrunner/createUpload', upload.single('file'), (req, res) =>
     var params = {
         name: file.key,
         type: fileType,
-        projectArn: 'arn:aws:devicefarm:us-west-2:501375891658:project:a1492621-3550-4b69-990b-72657904499a'
+        projectArn: projectArn
     }
 
     deviceFarm.createUpload(params, function (err, data) {
@@ -146,7 +149,7 @@ router.post('/aws-testrunner/createUpload', upload.single('file'), (req, res) =>
 async function getDevicePools(runName) {
 
     var params = {
-        arn: 'arn:aws:devicefarm:us-west-2:501375891658:project:a1492621-3550-4b69-990b-72657904499a'
+        arn: projectArn
     }
 
     return await deviceFarm.listDevicePools(params).promise().then(
@@ -199,14 +202,7 @@ async function scheduleRun(runName) {
                         await sleep(60000);
                         runStatus = await getRun(data.run.arn);
                     }
-                    /*
-                    //apply resource tag
-                    let resourceArn = data.arn;
-                    let tags = {
-                        projectName: "Impact",
-                        type: "testrun"
-                    }
-                    tagResource(resourceArn, tags);*/
+                    console.log('TEST COMPLETED!!!');
                 }
             });
         }
@@ -217,13 +213,29 @@ async function getRun(runArn) {
     return await deviceFarm.getRun({ arn: runArn }, function (err, data) {
         if (err) console.log(err, err.stack); // an error occurred
         else if (data.run.status === "COMPLETED") {
-            console.log('TEST RUN COMPLETED!');
+            console.log('Test Run COMPLETED!');
+            saveTestResult(data);
+            //apply resource tag
+            let resourceArn = data.arn;
+            let tags = {
+                projectName: "Impact",
+                type: "testrun"
+            }
+            tagResource(resourceArn, tags);
+            getRunArtifacts(data.arn);
         }
         console.log("Get run status: " + data.run.status);
         return data.run.status;
     });
 }
 
+async function saveTestResult(data) {
+    TestResult.save(data, (err, res) => {
+        if (err) console.log(err, err.stack); // an error occurred
+        else console.log('Test Result Saved.');
+        console.log(data);
+    });
+}
 
 async function tagResource(resourceArn, tags) {
     var params = {
@@ -239,11 +251,81 @@ async function tagResource(resourceArn, tags) {
     });
 }
 
+async function getRunArtifacts(runArn) {
+    var params = {
+        arn: runArn,
+        type: "FILE"
+    }
+    deviceFarm.listArtifacts(params, (err, data) => {
+        if (err) console.log(err, err.stack); // an error occurred
+        else if (data) {
+            data.forEach(function (obj, index) {
+                if (obj.name === 'Customer Artifacts') {
+                    //get file url, pipe stream it to S3
+                    let filename = 'test' + index + 'zip';
+                    request(obj.url).pipe(fs.createWriteStream(filename), async (err, res) => {
+                        if (!err && res.statusCode === 200) {
+                            let body = fs.createWriteStream(filename);
+                            await uploadArtifactToS3(body);
+                        } else {
+                            console.log(err, err.stack); // an error occurred
+                        }
+                    });
+                }
+            })
+        }
+    })
+
+}
+
+async function uploadArtifactToS3(body) {
+    let options = {
+        headers: {},
+        method: 'PUT',
+        body: body
+    };
+    //upload file to S3 with presigned url
+    await request(options, async function (err, res) {
+        if (!err && res.statusCode == 200) {
+            console.log('Uploaded aritfact: ' + filename + ' to S3!');
+            await importTestResultToRP(filename);
+        } else {
+            console.log(error);
+        }
+    });
+}
+
+async function importTestResultToRP(filename) {
+
+    let bucket = 'cmpe281-impact-rp-bucket';
+    s3.getObject({ Bucket: bucket, Key: filename }, function (err, test_artifact) {
+        if (err) console.log(err, err.stack); // an error occurred
+        else {
+            const reportPortalUrl = 'https://web.demo.reportportal.io/api/v1/jackyc415_personal/launch/import';
+            const accessToken = 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx';
+            let options = {
+                method: 'POST',
+                url: reportPortalUrl,
+                headers: {
+                    Authorization: 'Bearer ' + accessToken,
+                    'Content-Type': 'application/json'
+                },
+                body: test_artifact.Body
+            };
+            //import file to ReportPortal for bug tracker management
+            request(options, function (err, res) {
+                if (err) console.log(err, err.stack); // an error occurred
+                else console.log('Imported test artifact to ReportPortal.io!')
+            });
+        }
+    })
+}
+
 router.post('/aws-testrunner/run', async (req, res) => {
 
     let getDeviceStatus = await getDevicePools(req.session.runName);
     while (getDeviceStatus !== "SUCCEEDED") {
-        console.log("Re-attempt get device status: 'PROCESSING'");
+        console.log("Re-attempt get device status: " + getDeviceStatus);
         await sleep(5000);
         getDeviceStatus = await getDevicePools(req.session.runName);
     }
@@ -253,14 +335,9 @@ router.post('/aws-testrunner/run', async (req, res) => {
 router.get('/aws-testrunner/listruns', (req, res) => {
 
     //let projectArn = req.body;
-    let projectArn = 'arn:aws:devicefarm:us-west-2:501375891658:project:a1492621-3550-4b69-990b-72657904499a';
-
     deviceFarm.listRuns({ arn: projectArn }, function (err, data) {
         if (err) console.log(err, err.stack); // an error occurred
-        else {
-            console.log(data); // successful response
-            res.status(200).send(data);
-        }
+        else res.status(200).send(data);
     });
 });
 
@@ -270,10 +347,7 @@ router.get('/aws-testrunner/getrun/*', (req, res) => {
     console.log(runArn);
     deviceFarm.getRun({ arn: runArn }, function (err, data) {
         if (err) console.log(err, err.stack); // an error occurred
-        else {
-            console.log(data); // successful response
-            res.status(200).send(data);
-        }
+        else res.status(200).send(data);
     });
 });
 
