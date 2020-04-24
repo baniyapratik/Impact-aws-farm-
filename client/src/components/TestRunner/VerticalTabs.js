@@ -9,15 +9,25 @@ import AppDeviceState from './AppDeviceState';
 class VerticalTabs extends Component {
   constructor(props) {
     super(props);
-    this.handler = this.handler.bind(this);
     this.state = {
       tabsEnabled: false
     }
+    this.tabsHandler = this.tabsHandler.bind(this);
+    this.handleModal = this.handleModal.bind(this);
   }
 
-  handler() {
-    console.log('tabs enabled!');
-    this.setState({ tabsEnabled: true });
+  tabsHandler(arg) {
+    if (arg) {
+      console.log('tabs enabled!');
+      this.setState({ tabsEnabled: arg });
+    } else {
+      console.log('tabs disabled!');
+      this.setState({ tabsEnabled: arg });
+    }
+  }
+
+  handleModal() {
+    this.props.closeModal();
   }
 
   render() {
@@ -68,10 +78,10 @@ class VerticalTabs extends Component {
             <Col sm={9}>
               <Tab.Content>
                 <Tab.Pane eventKey="first">
-                  <AppUpload action={this.handler} />
+                  <AppUpload tabsHandler={this.tabsHandler} />
                 </Tab.Pane>
                 <Tab.Pane eventKey="second">
-                  <AppConfig />
+                  <AppConfig tabsHandler={this.tabsHandler} />
                 </Tab.Pane>
                 <Tab.Pane eventKey="third">
                   <AppDevice />
@@ -80,7 +90,7 @@ class VerticalTabs extends Component {
                   <AppDeviceState />
                 </Tab.Pane>
                 <Tab.Pane eventKey="fifth">
-                  <AppStart />
+                  <AppStart handleModal={this.handleModal} />
                 </Tab.Pane>
               </Tab.Content>
             </Col>

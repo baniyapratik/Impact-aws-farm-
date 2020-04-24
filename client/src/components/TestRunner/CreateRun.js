@@ -10,16 +10,17 @@ class CreateTest extends Component {
         this.state = {
             show: false
         }
+        this.closeModal = this.closeModal.bind(this);
     }
 
-    handleChange() {
+    closeModal() {
         this.setState({ show: false });
     }
 
     render() {
         return (
             <div>
-                <h2>CMPE 281 *Team Impact* Testrunner Component (Created by: Jacky Z. Chen)</h2>
+                <h2>CMPE 281 - Testrunner Component (Team Impact)</h2>
                 <i>Automated runs allow you to execute built-in tests or your own scripts on one or more devices in parallel,
                     generating a comprehensive report that includes high-level results, logs, screenshots, and performance data.
                 </i>
@@ -42,7 +43,7 @@ class CreateTest extends Component {
                     </Modal.Header>
                     <Modal.Body>
                         <div>
-                            <VerticalTabs />
+                            <VerticalTabs closeModal={this.closeModal} />
                         </div>
                     </Modal.Body>
                 </Modal>

@@ -11,6 +11,7 @@ class AppStart extends Component {
         axios.post('/aws-testrunner/run', null).then((response) => {
             console.log(response); // do something with the response
         });
+        this.props.handleModal();
     }
 
     render() {
@@ -20,8 +21,8 @@ class AppStart extends Component {
                 <br></br>
                 <div>Review your run below. Look good? Confirm to start your run. Interested in unlimited, unmetered testing?
                 <Nav.Item>
-                    <Nav.Link eventKey="link-1">Learn more</Nav.Link>
-                </Nav.Item>
+                        <Nav.Link eventKey="link-1">Learn more</Nav.Link>
+                    </Nav.Item>
                 </div>
                 <br></br>
                 <Accordion>
@@ -32,7 +33,7 @@ class AppStart extends Component {
                         </Accordion.Toggle>
                         </Card.Header>
                         <Accordion.Collapse eventKey="0">
-                            <Card.Body><strong>Name</strong> test123.apk</Card.Body>
+                            <Card.Body><strong>Name</strong> demo.apk</Card.Body>
                         </Accordion.Collapse>
                     </Card>
                     <Card>
