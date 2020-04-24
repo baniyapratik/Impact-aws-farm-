@@ -159,7 +159,7 @@ async function getDevicePools(runName) {
                     //default TOP-devices for now, user may create custom later
                     app.deviceArn = data.devicePools[0].arn;
                     app.save((err) => {
-                        if (err) console.log(err, err.stack); // an error occurred
+                        if (err) console.log(err, err.stack);
                         else {
                             console.log("Device saved to MongoDB status: 'SUCCEEDED'");
                         }
@@ -174,7 +174,6 @@ async function getDevicePools(runName) {
 }
 
 async function scheduleRun(runName) {
-
     await Upload.findOne({ appName: runName }, (err, run) => {
         if (err) console.log(err, err.stack);
         else if (run) {
@@ -194,12 +193,12 @@ async function scheduleRun(runName) {
                 if (err) console.log(err, err.stack);
                 else if (data) {
                     console.log(data);
-                    let runStatus = await getRun(data.run.arn);
-                    while (runStatus !== "COMPLETED") {
+                    let runResult = await getRun(data.run.arn);
+                    while (runResult === "PENDING") {
                         await sleep(60000);
                         runStatus = await getRun(data.run.arn);
                     }
-                    console.log('TEST COMPLETED!!!');
+                    console.log('TEST RUN COMPLETED!');
                 }
             });
         }
@@ -208,27 +207,27 @@ async function scheduleRun(runName) {
 
 async function getRun(runArn) {
     return await deviceFarm.getRun({ arn: runArn }, function (err, data) {
+        let runResult = data.run.result;
+        let arnOfRun = data.arn;
         if (err) console.log(err, err.stack);
-        else if (data.run.status === "COMPLETED") {
-            console.log('Test Run COMPLETED!');
-            saveTestResult(data); //save test result to mongo
-            let resourceArn = data.arn;
+        else if (runResult !== 'STOPPED' && runResult !== "PENDING") {
             let tags = {
-                projectName: "Impact",
-                type: "testrun"
+                "projectName": "Impact",
+                "type": "testrun"
             }
-            tagResource(resourceArn, tags); //apply resource tag
-            getRunArtifacts(data.arn); //get artifacts and import to reportportal
+            tagResource(arnOfRun, tags); //apply resource tag
+            //saveTestResult(data); //save test result to db
+            getRunArtifacts(arnOfRun); //get run artifacts
         }
-        console.log("Get run status: " + data.run.status);
-        return data.run.status;
+        console.log("Get run result: " + runResult);
+        return runResult;
     });
 }
 
 async function saveTestResult(data) {
     TestResult.save(data, (err, res) => {
         if (err) console.log(err, err.stack);
-        else console.log('Test Result Saved.');
+        else console.log('Test result saved.');
         console.log(data);
     });
 }
@@ -241,7 +240,7 @@ async function tagResource(resourceArn, tags) {
     resourceTagging.tagResources(params, function (err, data) {
         if (err) res.status(400).send(error.stack);
         else {
-            console.log('tagged!');
+            console.log('Resource tagged!');
             res.send("tagged");
         }
     });
@@ -260,7 +259,7 @@ async function getRunArtifacts(runArn) {
                 if (obj.name === 'Customer Artifacts') {
                     let filename = 'artifact' + index + '.zip';
                     //local version
-                    importArtifactsToRP(obj.url, filename);
+                    await importArtifactsToRP(obj.url, filename);
                     /*
                     //remote version in progress
                     let options = {
@@ -275,7 +274,7 @@ async function getRunArtifacts(runArn) {
                         }
                     });*/
                 }
-            })
+            });
         }
     })
 
@@ -290,7 +289,7 @@ async function uploadArtifactToS3(body, filename) {
             console.log(err, err.stack);
         } else if (data) {
             console.log('Uploaded aritfact: ' + filename + ' to S3!');
-            await importTestResultToRP(filename);
+            await importArtifactsToRP(filename);
         }
     });
 }*/
@@ -336,7 +335,7 @@ router.post('/aws-testrunner/run', async (req, res) => {
 
 router.get('/aws-testrunner/listruns', (req, res) => {
     deviceFarm.listRuns({ arn: projectArn }, function (err, data) {
-        if (err) console.log(err, err.stack); // an error occurred
+        if (err) console.log(err, err.stack);
         else res.status(200).send(data);
     });
 });
@@ -346,7 +345,7 @@ router.get('/aws-testrunner/getrun/*', (req, res) => {
     let runArn = Object.values(req.params)[0];
     console.log(runArn);
     deviceFarm.getRun({ arn: runArn }, function (err, data) {
-        if (err) console.log(err, err.stack); // an error occurred
+        if (err) console.log(err, err.stack);
         else res.status(200).send(data);
     });
 });
