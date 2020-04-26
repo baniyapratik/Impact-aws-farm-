@@ -20,7 +20,7 @@ testerController.createTester = async (req, res) => {
     });
   }
 };
-testerController.getTester = async (req, res) => {
+testerController.getTesterByFirebaseId = async (req, res) => {
   try {
     const tester = await Tester.find({ firebaseId: req.params.testerid });
     res.status(200).json({
@@ -36,6 +36,23 @@ testerController.getTester = async (req, res) => {
     });
   }
 };
+testerController.getTester = async (req, res) => {
+  try {
+    const tester = await Tester.findById(req.params.testerid);
+    res.status(200).json({
+      status: 'success',
+      data: {
+        tester,
+      },
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: 'failure',
+      messsage: err,
+    });
+  }
+};
+
 testerController.updateTester = async (req, res) => {
   try {
     const tester = await Tester.findByIdAndUpdate(

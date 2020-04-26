@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { Component } from 'react';
 import * as routes from '../authentication/constants/routes';
-
+import { Form, Button } from 'react-bootstrap';
 const byPropKey = (propertyName, value) => () => ({
   [propertyName]: value,
 });
@@ -55,48 +55,67 @@ class UpdateProject extends Component {
     let tommorow = new Date();
     tommorow.setDate(tommorow.getDate() + 1);
     return (
-      <div>
-        <h3>Update Project</h3>
-        <form onSubmit={this.onSubmit}>
-          <input
-            value={name}
-            onChange={(event) =>
-              this.setState(byPropKey('name', event.target.value))
-            }
-            type="text"
-            placeholder="Project Name"
-          />
-          <textarea
-            value={description}
-            onChange={(event) =>
-              this.setState(byPropKey('description', event.target.value))
-            }
-            type="text"
-            placeholder="Project Description"
-          />
-          <input
-            value={start_date}
-            onChange={(event) =>
-              this.setState(byPropKey('start_date', event.target.value))
-            }
-            min={new Date().toLocaleDateString()}
-            type="date"
-          />
-          <input
-            value={end_date}
-            onChange={(event) =>
-              this.setState(byPropKey('end_date', event.target.value))
-            }
-            min={tommorow}
-            type="date"
-          />
-
-          <button disabled={isInvalid} type="submit">
+      <>
+        <hr></hr>
+        <Form onSubmit={this.onSubmit}>
+          <Form.Group controlId="Project Name">
+            <Form.Label>Project Name</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Name"
+              value={name}
+              onChange={(event) =>
+                this.setState(byPropKey('name', event.target.value))
+              }
+            />
+            <Form.Text className="text-muted">
+              Project name must be more than 10 characters and less than 30
+              characters
+            </Form.Text>
+          </Form.Group>
+          <Form.Group controlId="Project Description">
+            <Form.Label>Description</Form.Label>
+            <Form.Control
+              as="textarea"
+              rows="3"
+              value={description}
+              onChange={(event) =>
+                this.setState(byPropKey('description', event.target.value))
+              }
+              type="text"
+              placeholder="Project Description"
+            ></Form.Control>
+          </Form.Group>
+          <Form.Group controlId="Project Start Date">
+            <Form.Label>Start Date</Form.Label>
+            <Form.Control
+              type="date"
+              placeholder="Start Date"
+              value={start_date}
+              onChange={(event) =>
+                this.setState(byPropKey('start_date', event.target.value))
+              }
+            />
+            <Form.Text className="text-muted"></Form.Text>
+          </Form.Group>
+          <Form.Group controlId="Project End Date">
+            <Form.Label>End Date</Form.Label>
+            <Form.Control
+              type="date"
+              placeholder="End Date"
+              value={end_date}
+              onChange={(event) =>
+                this.setState(byPropKey('end_date', event.target.value))
+              }
+            />
+            <Form.Text className="text-muted"></Form.Text>
+          </Form.Group>
+          <Button disabled={isInvalid} type="submit" variant="secondary">
             Update
-          </button>
+          </Button>
           {error && <p>{error.message}</p>}
-        </form>
-      </div>
+        </Form>
+      </>
     );
   }
 }

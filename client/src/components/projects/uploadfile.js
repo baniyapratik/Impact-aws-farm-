@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import * as routes from '../authentication/constants/routes';
+import { Form, Button, Alert, Row } from 'react-bootstrap';
+import bsCustomFileInput from 'bs-custom-file-input';
 
 class UploadFile extends Component {
   constructor(props) {
@@ -9,15 +11,25 @@ class UploadFile extends Component {
       success: false,
       url: '',
       project: this.props,
+      user: JSON.parse(localStorage.getItem('user')),
+      error: false,
     };
   }
 
+  componentDidMount() {
+    bsCustomFileInput.init();
+  }
+
   handleChange = (ev) => {
-    this.setState({ success: false, url: '' });
+    this.setState({ success: false, url: '', error: false });
   };
 
   handleUpload = (ev) => {
     const file = this.uploadInput.files[0];
+    if (!file) {
+      this.setState({ error: true });
+      return;
+    }
     const fileParts = this.uploadInput.files[0].name.split('.');
     const fileName = fileParts[0];
     const fileType = fileParts[1];
@@ -48,6 +60,7 @@ class UploadFile extends Component {
             artifactRequest.artifacts.push({
               name: fileName,
               s3Id: this.state.url,
+              owner: this.state.user._id,
             });
             axios
               .patch(
@@ -73,27 +86,47 @@ class UploadFile extends Component {
   };
 
   render() {
-    const Success_message = () => (
-      <div style={{ padding: 50 }}>
-        <h3 style={{ color: 'green' }}>SUCCESSFUL UPLOAD</h3>
-        <a href={this.state.url}>Access the file here</a>
-        <br />
-      </div>
+    const SuccessMessage = () => (
+      <>
+        <Alert variant="success" dismissible={true}>
+          <Alert.Heading>File Uploaded Succesfully</Alert.Heading>
+          <p>
+            The file has been saved in the cloud.
+            <a target="_blank" href={this.state.url}>
+              Access the file here{' '}
+            </a>
+          </p>
+        </Alert>
+      </>
     );
     return (
-      <div className="App">
+      <div className="fileform">
+        <hr></hr>
         <center>
-          <h1>UPLOAD A FILE</h1>
-          {this.state.success ? <Success_message /> : null}
-          <input
-            onChange={this.handleChange}
-            ref={(ref) => {
-              this.uploadInput = ref;
-            }}
-            type="file"
-          />
-          <br />
-          <button onClick={this.handleUpload}>UPLOAD</button>
+          <Form>
+            <h4></h4>
+            {this.state.success ? <SuccessMessage /> : null}
+            <Form.File
+              id="custom-file"
+              label="Custom file input"
+              custom
+              onChange={this.handleChange}
+              ref={(ref) => {
+                this.uploadInput = ref;
+              }}
+            ></Form.File>
+            <Button onClick={this.handleUpload} style={{ marginTop: '15px' }}>
+              Upload
+            </Button>
+            <Alert
+              show={this.state.error}
+              dismissible={true}
+              variant="danger"
+              style={{ marginTop: '15px' }}
+            >
+              Please select a file to continue
+            </Alert>
+          </Form>
         </center>
       </div>
     );

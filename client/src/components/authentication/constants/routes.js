@@ -6,3 +6,4 @@ export const ACCOUNT = '/account';
 export const PASSWORD_FORGET = '/pw-forget';
 export const UPLOAD_TESTCASE = '/upload-test-case';
 export const BACKEND_SERVER = 'http://localhost:6426/';
+export const AWS_SERVICE = 'http://localhost:5000';

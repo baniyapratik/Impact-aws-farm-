@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 const mongoose = require('mongoose');
 
 const projectSchema = new mongoose.Schema({
@@ -8,6 +9,10 @@ const projectSchema = new mongoose.Schema({
     trim: true,
     maxlength: [100, 'A project name must have at most 100 characters'],
     minlength: [10, 'A project name must haveat least 10 characters'],
+  },
+  projectarn: {
+    type: String,
+    required: [true, 'Unable to create project in AWS device Farm'],
   },
   description: {
     type: String,
@@ -28,10 +33,27 @@ const projectSchema = new mongoose.Schema({
     ref: 'Manager',
     required: [true, 'A project must have a manager who owns it'],
   },
+  requiredtesters: {
+    type: Number,
+    required: [true, 'A project must have  the number of testers required'],
+  },
   testers: [
     {
-      type: mongoose.ObjectId,
-      ref: 'Tester',
+      tester: {
+        type: mongoose.ObjectId,
+        ref: 'Tester',
+      },
+      status: {
+        type: String,
+        required: [
+          true,
+          'A tester must have been either Pending approval or Accepted or denied status ',
+        ],
+        enum: {
+          values: ['Pending', 'Accepted', 'Denied'],
+        },
+        default: 'Pending',
+      },
     },
   ],
   devicepool: {
@@ -58,6 +80,9 @@ const projectSchema = new mongoose.Schema({
       },
       s3Id: {
         type: String,
+      },
+      owner: {
+        type: mongoose.ObjectId,
       },
     },
   ],

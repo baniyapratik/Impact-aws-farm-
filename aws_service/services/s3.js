@@ -1,12 +1,14 @@
 const AWS = require('aws-sdk');
 const keys = require('../config/keys');
 
-AWS.config.update({
-    bucketName: 'cmpe281-impact-bucket',
-    accessKeyId: keys.accessKeyId,
-    secretAccessKey: keys.secretAccessKey,
-    region:'us-west-1'
-});
+const config = {
+  Bucket: 'impact-mtaas-artifact-store',
+  accessKeyId: keys.accessKeyId,
+  secretAccessKey: keys.secretAccessKey,
+  region: 'us-east-2',
+};
 
-var s3 = new AWS.S3();
+console.log('Config for S3 : ' + JSON.stringify(config));
+
+const s3 = new AWS.S3(config);
 module.exports = s3;

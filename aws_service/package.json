@@ -26,6 +26,7 @@
     "postman-request": "^2.88.1-postman.22",
     "redis": "^3.0.2",
     "request": "^2.88.2",
-    "uuid": "^7.0.2"
+    "uuid": "^7.0.2",
+    "dotenv": "^8.2.0"
   }
 }

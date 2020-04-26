@@ -11,6 +11,8 @@ router
   .route('/:testerid')
   .get(testerController.getTester)
   .patch(testerController.updateTester);
+
+router.route('/firebase/:testerid').get(testerController.getTesterByFirebaseId);
 router.route('/:testerid/projects').get(testerController.getProjects);
 
 module.exports = router;

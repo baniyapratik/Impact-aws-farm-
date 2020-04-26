@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import * as routes from './../authentication/constants/routes';
 import axios from 'axios';
-import Project from './project';
+import ProjectCard from './projectcard';
+import { Card, Button, CardDeck } from 'react-bootstrap';
+import style from './../authentication/styles/projectcard.css';
 
 class ViewProjects extends Component {
   constructor(props) {
@@ -42,6 +44,7 @@ class ViewProjects extends Component {
               end_date: element.end_date,
               description: element.description,
               testers: element.testers,
+              requiredtesters: element.requiredtesters,
               artifacts: element.artifacts,
             };
           });
@@ -63,16 +66,22 @@ class ViewProjects extends Component {
     const projects = this.state.projects;
     return (
       <div>
-        <h1>View Projects</h1>
-        <div>
-          {projects.map((project) => {
-            return (
-              <div id={project.id}>
-                {project.name}{' '}
-                <Project {...project} action={this.getProjects}></Project>
-              </div>
-            );
-          })}
+        <center>
+          <h1>View Projects</h1>
+        </center>
+        <div style={{ marginTop: '50px' }}>
+          <CardDeck id="projectcardwrapper">
+            {projects.map((project) => {
+              return (
+                <>
+                  <ProjectCard
+                    {...project}
+                    action={this.getProjects}
+                  ></ProjectCard>
+                </>
+              );
+            })}
+          </CardDeck>
         </div>
       </div>
     );

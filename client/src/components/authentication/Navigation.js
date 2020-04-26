@@ -2,15 +2,21 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import TestCaseUpload from '../TestCase/TestCaseUpload';
 import { Route, BrowserRouter as Router } from 'react-router-dom';
-
+import logo from './../common/MTaaSIcon.svg';
 import * as routes from './constants/routes';
 import SignOutButton from './SignOut';
+import { Navbar, Nav, FormControl, Button } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
+import NavDropdown from 'react-bootstrap/NavDropdown';
 
 class Navigation extends Component {
   constructor(props) {
     super(props);
     console.log(props);
-    this.state = { authUser: null };
+    this.state = {
+      authUser: null,
+      history: props.history,
+    };
   }
 
   componentDidUpdate(prevProps) {
@@ -28,50 +34,63 @@ class Navigation extends Component {
       }
     }
   }
+
+  getNavigationOption = () => {
+    const isAuthenticated = this.state.authUser;
+    const props = this.state;
+    if (isAuthenticated) {
+      return (
+        <>
+          {/*<Nav.Link href={routes.SIGN_IN}>Sign In</Nav.Link>*/}
+          <Nav.Link href={routes.LANDING}>Landing</Nav.Link>
+          <Nav.Link href={routes.HOME}>Home</Nav.Link>
+          <Nav.Link href={routes.ACCOUNT}>Account</Nav.Link>
+          <Form inline>
+            <SignOutButton />
+          </Form>
+        </>
+      );
+    } else {
+      return (
+        <>
+          <Nav.Link href={routes.LANDING}>Landing</Nav.Link>
+          <Nav.Link href={routes.SIGN_IN}>Sign In</Nav.Link>
+        </>
+      );
+    }
+  };
+
   render() {
     return (
       <div>
-        {this.state.authUser ? <NavigationAuth /> : <NavigationNonAuth />}
+        <Navbar bg="dark" variant="dark" expand="sm">
+          <Navbar.Brand href="#home">
+            <img
+              src={logo}
+              alt="User Icon"
+              width="50"
+              height="50"
+              style={{ backgroundColor: 'White', borderRadius: '12.5px' }}
+              class="d-inline-block align-center"
+            />{' '}
+            Impact
+          </Navbar.Brand>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="mr-auto">{this.getNavigationOption()}</Nav>
+            {/*} <Form inline>
+              <FormControl
+                type="text"
+                placeholder="Search"
+                className="mr-sm-2"
+              />
+              <Button variant="outline-success">Search</Button>
+            </Form>*/}
+          </Navbar.Collapse>
+        </Navbar>
       </div>
     );
   }
 }
-
-const NavigationAuth = () => (
-  <ul>
-    <li>
-      <Link to={routes.SIGN_IN}>Sign In</Link>
-    </li>
-    <li>
-      <Link to={routes.LANDING}>Landing</Link>
-    </li>
-    <li>
-      <Link to={routes.HOME}>Home</Link>
-    </li>
-    <li>
-      <Link to={routes.ACCOUNT}>Account</Link>
-    </li>
-    <li>
-      <Link to={routes.UPLOAD_TESTCASE}>Account</Link>
-    </li>
-    <div>
-      <Route path="/upload-test-case" component={TestCaseUpload} />
-    </div>
-    <li>
-      <SignOutButton />
-    </li>
-  </ul>
-);
-
-const NavigationNonAuth = () => (
-  <ul>
-    <li>
-      <Link to={routes.LANDING}>Landing</Link>
-    </li>
-    <li>
-      <Link to={routes.SIGN_IN}>Sign In</Link>
-    </li>
-  </ul>
-);
 
 export default Navigation;

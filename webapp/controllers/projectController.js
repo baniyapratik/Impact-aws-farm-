@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 const aws = require('aws-sdk');
 const Project = require('./../models/projectModel');
 
@@ -5,7 +6,22 @@ const projectController = {};
 
 projectController.createProject = async (req, res) => {
   try {
-    const project = await Project.create(req.body);
+    const config = {
+      region: 'us-west-2',
+      accessKeyId: process.env.AWS_ACCESS_KEY,
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    };
+    const devicefarm = new aws.DeviceFarm(config);
+    const projectRequest = req.body;
+    const params = {
+      name: projectRequest.name,
+      defaultJobTimeoutMinutes: '10',
+    };
+
+    const data = await devicefarm.createProject(params).promise();
+    console.log(data);
+    projectRequest.projectarn = data.project.arn;
+    const project = await Project.create(projectRequest);
     res.status(200).json({
       status: 'success',
       data: {
@@ -19,6 +35,7 @@ projectController.createProject = async (req, res) => {
     });
   }
 };
+
 projectController.getProject = async (req, res) => {
   try {
     const project = await Project.findById(req.params.projectid);
@@ -35,6 +52,7 @@ projectController.getProject = async (req, res) => {
     });
   }
 };
+
 projectController.getAllProjects = async (req, res) => {
   try {
     const projects = await Project.find();
@@ -52,6 +70,7 @@ projectController.getAllProjects = async (req, res) => {
     });
   }
 };
+
 projectController.updateProject = async (req, res) => {
   try {
     const project = await Project.findByIdAndUpdate(
@@ -88,14 +107,15 @@ projectController.getS3 = async (req, res) => {
     };
 
     const s3 = new aws.S3(config);
-    const fileName = req.body.fileName;
-    const fileType = req.body.fileType;
+    const file = {};
+    file.fileName = req.body.fileName;
+    file.fileType = req.body.fileType;
 
     const s3Params = {
       Bucket: S3_BUCKET,
-      Key: fileName,
+      Key: `${file.fileName}.${file.fileType}`,
       Expires: 500,
-      ContentType: fileType,
+      ContentType: `application/${file.fileType}`,
       ACL: 'public-read',
     };
     console.log(s3Params);
@@ -108,7 +128,9 @@ projectController.getS3 = async (req, res) => {
         console.log(data);
         const returnData = {
           signedRequest: data,
-          url: `https://${S3_BUCKET}.s3.amazonaws.com/${fileName}`,
+          url: `https://${S3_BUCKET}.s3.amazonaws.com/${file.fileName}.${
+            file.fileType
+          }`,
         };
 
         res.json({ success: true, data: { returnData } });
@@ -118,4 +140,5 @@ projectController.getS3 = async (req, res) => {
     console.log(err);
   }
 };
+
 module.exports = projectController;
