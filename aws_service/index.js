@@ -17,7 +17,7 @@ require('./models/Test');
 console.log(keys);
 
 mongoose
-  .connect(keys.mongodb, { useUnifiedTopology: true, useNewUrlParser: true })
+  .connect(keys.mongoURI, { useUnifiedTopology: true, useNewUrlParser: true })
   .then(() => console.log('mongodb connect success'))
   .catch((err) => console.log(err));
 

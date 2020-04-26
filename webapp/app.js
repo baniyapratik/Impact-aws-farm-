@@ -20,11 +20,11 @@ app.use(function(req, res, next) {
   next();
 });
 
-app.use('/managers', managerRouter);
-app.use('/testers', testerRouter);
-app.use('/projects', projectRouter);
+app.use('/api/webapp/managers', managerRouter);
+app.use('/api/webapp/testers', testerRouter);
+app.use('/api/webapp/projects', projectRouter);
 
-app.get('/test', (req, res) => {
+app.get('/api/webapp/test123', (req, res) => {
   res.status(200).json({
     message: 'Hello from ther server',
   });

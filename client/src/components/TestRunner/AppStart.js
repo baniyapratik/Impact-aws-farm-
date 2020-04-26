@@ -10,7 +10,7 @@ class AppStart extends Component {
 
   handleRunTest = (e) => {
     axios
-      .post(routes.AWS_SERVICE + '/aws-testrunner/run', null)
+      .post( '/aws-testrunner/run', null)
       .then((response) => {
         console.log(response); // do something with the response
       });

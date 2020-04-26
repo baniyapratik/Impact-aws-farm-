@@ -24,7 +24,7 @@ class AppUpload extends Component {
     this.setState({ inProgress: true });
     // '/files' is your node.js route that triggers our middleware
     axios
-      .post(routes.AWS_SERVICE + '/aws-testrunner/createUpload', data)
+      .post( '/aws-testrunner/createUpload', data)
       .then((res) => {
         console.log(res);
         console.log(this.state.inProgress);

@@ -16,7 +16,7 @@ class GetRun extends Component {
   componentDidMount() {
     let arn = this.props.match.params.id + '/' + this.props.match.params.id2;
     axios
-      .get(routes.AWS_SERVICE + '/aws-testrunner/getrun/' + arn)
+      .get('/aws-testrunner/getrun/' + arn)
       .then((res) => {
         this.setState({ run: res.data });
         this.setState({ pieChart: { dataPoints: [{ y: 5, label: 'b' }] } });

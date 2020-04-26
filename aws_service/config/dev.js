@@ -9,8 +9,8 @@ module.exports = {
   mongoUser: process.env.MONGODB_USER,
   mongoPassword: process.env.MONGODB_PASS,
   mongodb: process.env.MONGODB,
-  accessKeyId: process.env.AWS_ACCESS_KEY,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  accessKeyId: "AKIAU3ALBDVK4OENOBX2",
+  secretAccessKey: "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",
   mongoURI: 'mongodb://mongo:27017/devicefarm',
   S3Store: 'impact-mtaas-artifact-store',
 };

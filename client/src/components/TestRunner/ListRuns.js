@@ -15,7 +15,7 @@ class ListRuns extends Component {
 
   componentDidMount() {
     axios
-      .get(routes.AWS_SERVICE + '/aws-testrunner/listruns')
+      .get( '/aws-testrunner/listruns')
       .then((res) => {
         if (res.data.runs[0].status !== 'COMPLETED') {
           this.state.pendingStatus = true;

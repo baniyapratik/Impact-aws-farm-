@@ -1,12 +1,10 @@
-const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const app = require('./app');
-
-dotenv.config({ path: './.env' });
+const keys = require('./config/keys')
 
 const connectToMongoDb = async () => {
   try {
-    const connection = await mongoose.connect(process.env.MONGODB, {
+    const connection = await mongoose.connect(keys.mongoURI, {
       useNewUrlParser: true,
       useCreateIndex: true,
       useFindAndModify: false,
@@ -19,7 +17,7 @@ const connectToMongoDb = async () => {
     console.log(`Error while connecting to MOngDB :   ${err}`);
   }
 };
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 6426;
 app.listen(port, () => {
   console.log(`App running on port ${port}...`);
 });
