@@ -5,7 +5,7 @@ import './App.css';
 import 'font-awesome/css/font-awesome.css';
 
 import {FooterComponent}  from './components/FooterComponent/FooterComponent';
-import {SocialComponent} from './components/SocialComponent/SocialComponent';
+/*import {SocialComponent} from './components/SocialComponent/SocialComponent';*/
 import {CallToActionComponent} from './components/CallToActionComponent/CallToActionComponent';
 import {FeaturesComponent} from './components/FeaturesComponent/FeaturesComponent';
 import {AppDownloadComponent} from './components/AppDownloadComponent/AppDownloadComponent';
@@ -44,11 +44,12 @@ class App extends Component {
         <AppDownloadComponent />
         <FeaturesComponent />
         <CallToActionComponent />
-        <SocialComponent />
         <FooterComponent />
       </div>
     );
   }
 }
-
+/* Unused Components:
+    <SocialComponent />
+*/
 export default App;
