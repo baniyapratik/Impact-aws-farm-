@@ -8,6 +8,7 @@ import PasswordForgetPage from './PasswordForget';
 import HomePage from './Home';
 import AccountPage from './Account';
 import { firebase } from './firebase';
+import LandingComponent from '../../components/landing/src/LandingComponent';
 
 
 import * as routes from './constants/routes';
@@ -38,7 +39,7 @@ class AuthenticationPage extends Component {
 
       <Route
         exact path={routes.LANDING}
-        component={LandingPage}
+        component={LandingComponent}
       />
       <Route
         exact path={routes.SIGN_UP}

@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import './style.css';
 import * as Scroll from 'react-scroll';
 import { Link, Events, animateScroll as scroll, scrollSpy } from 'react-scroll'
-
+import { Navbar, Nav, FormControl, Button } from 'react-bootstrap';
+import * as routes from '../../../../../components/authentication/constants/routes';
+/*import AuthenticationPage from '../../../components/authentication/Authentication';*/
 
 class NavBarComponent extends Component{
   constructor(props){
@@ -41,7 +43,16 @@ class NavBarComponent extends Component{
   scrollToTop() {
     scroll.scrollToTop();
   }
-
+/*
+  getNavigationOption = () => {
+    return (
+        <>
+          <Nav.Link href={routes.LANDING}>Landing</Nav.Link>
+          <Nav.Link href={routes.SIGN_IN}>Sign In</Nav.Link>
+        </>
+      );
+  };
+*/
   render(){
     const show = this.state.mnuShow ? "show" : "";
     return (
@@ -61,7 +72,7 @@ class NavBarComponent extends Component{
                 <Link activeClass="active" className="nav-link js-scroll-trigger" to="features" spy={true} smooth="easeInOutQuart" duration={1000} >Features</Link>
               </li>
               <li className="nav-item">
-                <Link activeClass="active" className="nav-link js-scroll-trigger" to="sighin" spy={true} smooth="easeInOutQuart" duration={1000} >Sign In</Link>
+                <Nav.Link href={routes.SIGN_IN}>Sign In</Nav.Link>
               </li>
             </ul>
           </div>

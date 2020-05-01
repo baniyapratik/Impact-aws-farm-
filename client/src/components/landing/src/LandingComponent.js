@@ -10,7 +10,8 @@ import {CallToActionComponent} from './components/CallToActionComponent/CallToAc
 import {FeaturesComponent} from './components/FeaturesComponent/FeaturesComponent';
 import {AppDownloadComponent} from './components/AppDownloadComponent/AppDownloadComponent';
 import {HeroComponent} from './components/HeroComponent/HeroComponent';
-import NavBarComponent from './components/NavBarComponent/NavBarComponent';
+/*import NavBarComponent from './components/NavBarComponent/NavBarComponent';*/
+
 
 
 class LandingComponent extends Component {
@@ -39,7 +40,6 @@ class LandingComponent extends Component {
     const nbs = this.state ? this.state.navBarShrink : "";
     return (
       <div>
-        <NavBarComponent navBarShrink = {nbs} />
         <HeroComponent />
         <AppDownloadComponent />
         <FeaturesComponent />
@@ -50,6 +50,7 @@ class LandingComponent extends Component {
   }
 }
 /* Unused Components:
+    <NavBarComponent navBarShrink = {nbs} />
     <SocialComponent />
 */
 export default LandingComponent;

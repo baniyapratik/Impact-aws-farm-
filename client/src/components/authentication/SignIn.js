@@ -36,7 +36,7 @@ class SignInForm extends Component {
     <p>
       Don't have an account?{' '}
       <Link className="underlineHover" to={routes.SIGN_UP}>
-        Sign Up
+        Sign Up!
       </Link>
     </p>
   );
