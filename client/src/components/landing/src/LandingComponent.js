@@ -13,7 +13,7 @@ import {HeroComponent} from './components/HeroComponent/HeroComponent';
 import NavBarComponent from './components/NavBarComponent/NavBarComponent';
 
 
-class App extends Component {
+class LandingComponent extends Component {
   constructor(props){
     super(props);
     this.state={navBarShrink:""};
@@ -52,4 +52,4 @@ class App extends Component {
 /* Unused Components:
     <SocialComponent />
 */
-export default App;
+export default LandingComponent;
