@@ -4,7 +4,7 @@ import AuthenticationPage from './components/authentication/Authentication';
 import TestCaseUpload from './components/TestCase/TestCaseUpload';
 import CreateRun from './components/TestRunner/CreateRun';
 import GetRun from './components/TestRunner/GetRun';
-
+import Chatbot from './components/chatbot/Chatbot';
 class App extends Component {
   componentDidMount() {}
 
@@ -14,7 +14,7 @@ class App extends Component {
       <Router>
         <div className="App">
           <div>
-            <Route path="/" component={AuthenticationPage} />
+            {/* <Route path="/" component={AuthenticationPage} /> */}
           </div>
         </div>
         <div className="App">
@@ -24,6 +24,7 @@ class App extends Component {
             <Route path="/run/:id/:id2" component={GetRun} />
           </div>
         </div>
+        <Chatbot/>
       </Router>
     );
   }

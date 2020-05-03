@@ -64,7 +64,16 @@ services:
       - redis
     ports:
       - "6426:6426"
+  chatbot:
+    build:
+      dockerfile: Dockerfile
+      context: ./chatbot
+    volumes: 
+      - /chatbot/node_modules
+      - ./chatbot:/chatbot
 
+    ports:
+      - "5002:5002"
   aws_testrunner:
     depends_on:
       - mongo
@@ -94,6 +103,7 @@ services:
       - client
       - aws_testrunner
       - webapp
+      - chatbot
     restart: always
     build: 
       dockerfile: Dockerfile

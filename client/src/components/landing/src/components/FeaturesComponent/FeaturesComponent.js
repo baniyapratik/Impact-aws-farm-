@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './style.css';
-import 'simple-line-icons/css/simple-line-icons.css';
+//import 'simple-line-icons/css/simple-line-icons.css';
 import demoScreen1 from '../../testing_image.png';
 
 export const FeaturesComponent = (props)=>{
