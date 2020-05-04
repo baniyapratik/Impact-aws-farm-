@@ -42,12 +42,15 @@ class Navigation extends Component {
       return (
         <>
           {/*<Nav.Link href={routes.SIGN_IN}>Sign In</Nav.Link>*/}
-          <Nav.Link href={routes.LANDING}>Landing</Nav.Link>
           <Nav.Link href={routes.HOME}>Home</Nav.Link>
           <Nav.Link href={routes.ACCOUNT}>Account</Nav.Link>
-          <Form inline>
-            <SignOutButton />
-          </Form>
+          <Nav.Link href="#">Report Portal</Nav.Link>
+          <Nav.Link href="#">Billing</Nav.Link>
+          <div style={{ marginLeft: '800px' }}>
+            <Form inline>
+              <SignOutButton />
+            </Form>
+          </div>
         </>
       );
     } else {

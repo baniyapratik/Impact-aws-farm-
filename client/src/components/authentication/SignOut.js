@@ -3,7 +3,7 @@ import * as routes from '../authentication/constants/routes';
 
 import { auth } from './firebase';
 import { Button } from 'react-bootstrap';
-import { Redirect } from "react-router-dom";
+import { Redirect } from 'react-router-dom';
 
 class SignOutButton extends Component {
   constructor(props) {
@@ -12,27 +12,30 @@ class SignOutButton extends Component {
   }
 
   handleSignOut = () => {
-
-    auth.doSignOut();
-    localStorage.setItem('user', '{"signedout" : true}');
-    this.setState({ redirect: routes.SIGN_IN });
+    auth
+      .doSignOut()
+      .then(() => {
+        localStorage.setItem('user', '{"signedout" : true}');
+        this.setState({ redirect: routes.SIGN_IN });
+      })
+      .catch((err) => {
+        console.log(err);
+        this.setState({ redirect: routes.SIGN_IN });
+      });
   };
 
   render() {
     if (this.state.redirect) {
-      return <Redirect to={this.state.redirect} />
+      return <Redirect to={this.state.redirect} />;
     }
     return (
-
       <>
         <Button variant="outline-success" onClick={this.handleSignOut}>
           Sign Out
-  </Button>
+        </Button>
       </>
-    )
+    );
   }
-
-
 }
 
 export default SignOutButton;

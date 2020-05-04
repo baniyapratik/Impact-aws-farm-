@@ -45,17 +45,17 @@ class SignInForm extends Component {
     const { email, password, usertype } = this.state;
 
     const { history } = this.props;
-
+    let error;
     auth
       .doSignInWithEmailAndPassword(email, password)
       .then((authUser) => {
         console.log(authUser);
         const firebaseid = authUser.user.uid;
         let url = `${routes.BACKEND_SERVER}${usertype}/${firebaseid}`;
-        if(usertype === 'testers'){
-          url = `${routes.BACKEND_SERVER}${usertype}/firebase/${firebaseid}`
+        if (usertype === 'testers') {
+          url = `${routes.BACKEND_SERVER}${usertype}/firebase/${firebaseid}`;
         }
-        
+
         axios
           .get(url)
           .then((res) => {
@@ -65,28 +65,33 @@ class SignInForm extends Component {
               (res.data.data.tester && res.data.data.tester.length === 0)
             ) {
               auth.doSignOut();
+
               const err = {};
               err.message = 'User type is incorrect for the given email';
               throw err;
+            } else {
+              localStorage.setItem(
+                'user',
+                JSON.stringify(
+                  res.data.data.manager
+                    ? res.data.data.manager[0]
+                    : res.data.data.tester[0]
+                )
+              );
+              this.setState({ ...INITIAL_STATE });
+              history.push(routes.HOME);
             }
-            localStorage.setItem(
-              'user',
-              JSON.stringify(
-                res.data.data.manager
-                  ? res.data.data.manager[0]
-                  : res.data.data.tester[0]
-              )
-            );
-            this.setState({ ...INITIAL_STATE });
-            history.push(routes.HOME);
           })
           .catch((err) => {
             console.log(err);
-          const error = {
-            message: err.response.data.messsage.message,
-          };
-  
-          this.setState(byPropKey('error', err));
+            if (err.message) {
+              error = { message: err.message };
+            } else {
+              error = {
+                message: err.response.data.messsage.message,
+              };
+            }
+            this.setState(byPropKey('error', error));
           });
       })
       .catch((error) => {

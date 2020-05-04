@@ -6,15 +6,18 @@ import CreateRun from './components/TestRunner/CreateRun';
 import GetRun from './components/TestRunner/GetRun';
 import Chatbot from './components/chatbot/Chatbot';
 class App extends Component {
-  componentDidMount() {}
+  componentDidMount() {
+    localStorage.setItem('user', '{"signedout" : true}');
+  }
 
   render() {
     console.log(process.env.REACT_APP_FIREBASE_APIKEY);
+
     return (
       <Router>
         <div className="App">
           <div>
-            {/* <Route path="/" component={AuthenticationPage} /> */}
+            <Route path="/" component={AuthenticationPage} />
           </div>
         </div>
         <div className="App">
@@ -24,7 +27,7 @@ class App extends Component {
             <Route path="/run/:id/:id2" component={GetRun} />
           </div>
         </div>
-        <Chatbot/>
+        <Chatbot />
       </Router>
     );
   }
