@@ -50,13 +50,13 @@ class Chatbot extends Component {
         if (i == length - 1) {
           message = {
             id: 'Welcome' + i,
-            message: msg,
+            message: msg.text.text[0],
             trigger: 'helpmessage',
           };
         } else {
           message = {
             id: 'Welcome' + i,
-            message: msg,
+            message: msg.text.text[0],
             trigger: 'Welcome' + (i + 1),
           };
         }
