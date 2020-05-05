@@ -17,7 +17,7 @@ class DialogFLow extends Component {
     const res = await axios.post('/api/chatbot/df_text_query', { text });
 
     for (let msg of res.data.fulfillmentMessages) {
-      response = response + msg + '<\br>';
+      response = response + msg.text.text[0] + '<\br>';
     }
   }
 
@@ -42,7 +42,11 @@ class DialogFLow extends Component {
 
   render() {
     const value = this.state.responseValue;
-    return <>{value}</>;
+    return (
+      <div class="card bg-primary text-white">
+    <div class="card-body">Bot: {value}</div>
+  </div>
+    )
   }
 }
 

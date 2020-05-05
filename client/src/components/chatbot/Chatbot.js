@@ -34,7 +34,7 @@ class Chatbot extends Component {
       id: 'BotResponse',
       component: <DialogFlow />,
       waitAction: true,
-      trigger: 'helpmessage',
+      trigger: 'InteractiveMessage'
     };
     this.state.messages.push(botResponse);
   }
@@ -79,7 +79,7 @@ class Chatbot extends Component {
         id: 'BotResponse',
         component: <DialogFlow />,
         waitAction: true,
-        trigger: 'helpmessage',
+        trigger: 'InteractiveMessage'
       };
       messages.push(botResponse);
       this.setState({ messages: messages });
@@ -134,6 +134,12 @@ class Chatbot extends Component {
     console.log(messages);
     return (
       <ThemeProvider theme={theme}>
+          <div
+            ref={(el) => {
+              this.messagesEnd = el;
+            }}
+            style={{ float: 'left', clear: 'both' }}
+          ></div>
         <ChatBot steps={messages} {...config} />
       </ThemeProvider>
     );
