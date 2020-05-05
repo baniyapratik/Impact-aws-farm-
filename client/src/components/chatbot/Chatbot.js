@@ -42,7 +42,7 @@ class Chatbot extends Component {
   async df_event_query(event) {
     try {
       const res = await axios.post('/api/chatbot/df_event_query', { event });
-      let i = 1;
+      let i = 0;
       const messages = this.state.messages;
       const length = res.data.fulfillmentMessages.length;
       for (let msg of res.data.fulfillmentMessages) {
