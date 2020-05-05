@@ -42,7 +42,7 @@ class Chatbot extends Component {
   async df_event_query(event) {
     try {
       const res = await axios.post('/api/chatbot/df_event_query', { event });
-      let i = 1;
+      let i = 0;
       const messages = this.state.messages;
       const length = res.data.fulfillmentMessages.length;
       for (let msg of res.data.fulfillmentMessages) {
@@ -50,13 +50,13 @@ class Chatbot extends Component {
         if (i == length - 1) {
           message = {
             id: 'Welcome' + i,
-            message: msg,
+            message: msg.text.text[0],
             trigger: 'helpmessage',
           };
         } else {
           message = {
             id: 'Welcome' + i,
-            message: msg,
+            message: msg.text.text[0],
             trigger: 'Welcome' + (i + 1),
           };
         }

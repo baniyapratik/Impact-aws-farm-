@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
 const aws = require('aws-sdk');
 const Project = require('./../models/projectModel');
+const keys = require('./../config/keys');
 
 const projectController = {};
 
@@ -8,8 +9,8 @@ projectController.createProject = async (req, res) => {
   try {
     const config = {
       region: 'us-west-2',
-      accessKeyId: process.env.AWS_ACCESS_KEY,
-      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+      accessKeyId: keys.AWS_ACCESS_KEY,
+      secretAccessKey: keys.AWS_SECRET_ACCESS_KEY,
     };
     const devicefarm = new aws.DeviceFarm(config);
     const projectRequest = req.body;

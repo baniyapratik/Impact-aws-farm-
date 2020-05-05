@@ -6,9 +6,7 @@ import CreateRun from './components/TestRunner/CreateRun';
 import GetRun from './components/TestRunner/GetRun';
 import Chatbot from './components/chatbot/Chatbot';
 class App extends Component {
-  componentDidMount() {
-    localStorage.setItem('user', '{"signedout" : true}');
-  }
+  componentDidMount() {}
 
   render() {
     console.log(process.env.REACT_APP_FIREBASE_APIKEY);

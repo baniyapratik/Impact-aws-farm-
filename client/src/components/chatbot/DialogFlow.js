@@ -16,8 +16,11 @@ class DialogFLow extends Component {
   async df_text_query(text) {
     const res = await axios.post('/api/chatbot/df_text_query', { text });
 
-    for (let msg of res.data.fulfillmentMessages) {
-      response = response + msg.text.text[0] + '<\br>';
+    const messages = res.data.fulfillmentMessages;
+    let i = 0;
+    response = '';
+    for (i = 0; i < messages.length; i++) {
+      response = response + messages[i].text.text[0];
     }
   }
 
