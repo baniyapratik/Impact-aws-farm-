@@ -23,17 +23,20 @@ class DialogFLow extends Component {
 
   componentDidMount() {
     if (!this.state.flag) {
-      try {
-        this.df_text_query(this.state.value);
-        this.setState({ responseValue: response });
-        this.state.props.triggerNextStep();
-        this.setState({ flag: false });
-      } catch (err) {
-        console.log(err);
-        this.setState({
-          responseValue: 'So sorry cannot help you at this time ',
+      this.df_text_query(this.state.value)
+        .then(() => {
+          this.setState({ responseValue: response });
+          this.state.props.triggerNextStep();
+          this.setState({ flag: false });
+        })
+        .catch((err) => {
+          console.log(err);
+          this.setState({
+            responseValue: 'So sorry cannot help you at this time ',
+          });
+          this.state.props.triggerNextStep();
+          this.setState({ flag: false });
         });
-      }
     }
   }
 

@@ -18,25 +18,25 @@ class Chatbot extends Component {
       result: '',
       trigger: false,
     };
-    // let helpmessage = {
-    //   id: 'helpmessage',
-    //   message: 'How can I help you?',
-    //   trigger: 'InteractiveMessage',
-    // };
-    // this.state.messages.push(helpmessage);
-    // let userinputmessage = {
-    //   id: 'InteractiveMessage',
-    //   user: true,
-    //   trigger: 'BotResponse',
-    // };
-    // this.state.messages.push(userinputmessage);
-    // let botResponse = {
-    //   id: 'BotResponse',
-    //   component: <DialogFlow />,
-    //   waitAction: true,
-    //   trigger: 'helpmessage',
-    // };
-    // this.state.messages.push(botResponse);
+    let helpmessage = {
+      id: 'helpmessage',
+      message: 'How can I help you?',
+      trigger: 'InteractiveMessage',
+    };
+    this.state.messages.push(helpmessage);
+    let userinputmessage = {
+      id: 'InteractiveMessage',
+      user: true,
+      trigger: 'BotResponse',
+    };
+    this.state.messages.push(userinputmessage);
+    let botResponse = {
+      id: 'BotResponse',
+      component: <DialogFlow />,
+      waitAction: true,
+      trigger: 'helpmessage',
+    };
+    this.state.messages.push(botResponse);
   }
 
   async df_event_query(event) {

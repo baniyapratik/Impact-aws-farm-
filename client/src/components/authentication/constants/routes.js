@@ -5,4 +5,4 @@ export const HOME = '/home'; /* /home */
 export const ACCOUNT = '/account';
 export const PASSWORD_FORGET = '/pw-forget';
 export const UPLOAD_TESTCASE = '/upload-test-case';
-export const BACKEND_SERVER = 'http://localhost:6426/api/webapp/';
+export const BACKEND_SERVER = '/api/webapp/';
