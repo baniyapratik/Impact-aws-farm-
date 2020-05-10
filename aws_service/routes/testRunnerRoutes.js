@@ -110,7 +110,7 @@ router.post(
     if (fileExtension == '.apk') {
       fileType = 'ANDROID_APP';
       req.session.runName = file.originalname;
-      runName = file.originalname;
+      runName = file.originalname + new Date().toISOString();
     } else if (fileExtension == '.ipa') {
       fileType = 'IOS_APP';
       req.session.runName = file.originalname;
