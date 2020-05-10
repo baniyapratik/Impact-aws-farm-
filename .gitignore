@@ -1,6 +1,7 @@
 
 
 # dependencies
+
 /webapp/node_modules
 /webapp/package-lock.json
 /aws_service/node_modules
@@ -18,7 +19,7 @@
 
 # production
 /build
-dev.js
+
 
 # misc
 .DS_Store
@@ -33,5 +34,10 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-dev.js
+
+
+
+chatbot/config/dev.js
+webapp/config/dev.js
 aws_service/config/dev.js
+
