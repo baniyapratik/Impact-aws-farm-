@@ -25,7 +25,7 @@ class AppUpload extends Component {
     this.setState({ inProgress: true });
     data.append('projectarn', this.state.project.projectarn);
     // '/files' is your node.js route that triggers our middleware
-    axios.post('/aws-testrunner/createUpload', data).then((res) => {
+    axios.post('/api/aws-testrunner/createUpload', data).then((res) => {
       console.log(res);
       console.log(this.state.inProgress);
       if (res.status === 200) {

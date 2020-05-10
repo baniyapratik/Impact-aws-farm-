@@ -100,6 +100,7 @@ router.post(
   '/aws-testrunner/createUpload',
   upload.single('file'),
   (req, res) => {
+    console.log('Inside createUpload');
     const file = req.file; // file passed from client
     let userId = 'Jack';
     let fileExtension = path.extname(file.originalname);

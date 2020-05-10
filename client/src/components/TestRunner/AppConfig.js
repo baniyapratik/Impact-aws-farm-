@@ -32,7 +32,7 @@ class AppUpload extends Component {
     data.append('testType', this.state.testType);
     // '/files' is your node.js route that triggers our middleware
     data.append('projectarn', this.state.project.projectarn);
-    axios.post('/aws-testrunner/createUpload', data).then((res) => {
+    axios.post('/api/aws-testrunner/createUpload', data).then((res) => {
       if (res.status === 200) {
         console.log(res);
         this.props.tabsHandler(true);
