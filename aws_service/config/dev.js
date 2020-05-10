@@ -9,8 +9,8 @@ module.exports = {
   mongoUser: process.env.MONGODB_USER,
   mongoPassword: process.env.MONGODB_PASS,
   mongodb: process.env.MONGODB,
-  accessKeyId: 'AKIAJTTXXMUYFG52PIIQ',
-  secretAccessKey: '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',
+  accessKeyId: '',
+  secretAccessKey: '',
   mongoURI:
     'mongodb+srv://m001-student:m001-mongodb-basics@sandbox-nxgb1.mongodb.net/test?retryWrites=true&w=majority',
   S3Store: 'impact-mtaas-artifact-store',
