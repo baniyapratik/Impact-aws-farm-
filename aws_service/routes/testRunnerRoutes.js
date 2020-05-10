@@ -121,8 +121,7 @@ router.post(
     var params = {
       name: file.key,
       type: fileType,
-      projectArn:
-        'arn:aws:devicefarm:us-west-2:424030922106:project:444ce17f-5ad8-476c-ae2a-d78111377b5c',
+      projectArn: projectArn
     };
 
     deviceFarm.createUpload(params, function (err, data) {
