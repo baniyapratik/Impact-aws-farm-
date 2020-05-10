@@ -74,34 +74,11 @@ services:
 
     ports:
       - '5002:5002'
-  aws_testrunner:
-    depends_on:
-      - mongo
-      - redis
-    build:
-      dockerfile: Dockerfile
-      context: ./aws_service
-    volumes:
-      - /aws_app/node_modules
-      - ./aws_service:/aws_app
-    environment:
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - MONGODB_HOST=mongodb
-      - MONGODB_PORT=37017
-      - MONGODB_USER=root
-      - MONGODB_PASS=password123
-    links:
-      - mongo
-      - redis
-    ports:
-      - '6000:5000'
 
   nginx:
     depends_on:
       - aws_service
       - client
-      - aws_testrunner
       - webapp
       - chatbot
     restart: always
