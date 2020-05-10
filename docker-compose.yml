@@ -1,17 +1,17 @@
 version: '3'
-services: 
-  mongo: 
+services:
+  mongo:
     image: 'mongo'
     restart: always
     ports:
-      - "27017:27017"
+      - '27017:27017'
 
-  redis: 
+  redis:
     image: 'redis:latest'
     restart: always
-    ports: 
-      - "6379:6379"
-  
+    ports:
+      - '6379:6379'
+
   client:
     build:
       dockerfile: Dockerfile
@@ -27,10 +27,10 @@ services:
     build:
       dockerfile: Dockerfile
       context: ./aws_service
-    volumes: 
+    volumes:
       - /aws_app/node_modules
       - ./aws_service:/aws_app
-    environment: 
+    environment:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - MONGODB_HOST=mongodb
@@ -41,7 +41,7 @@ services:
       - mongo
       - redis
     ports:
-      - "5000:5000"
+      - '5000:5000'
   webapp:
     depends_on:
       - mongo
@@ -49,10 +49,10 @@ services:
     build:
       dockerfile: Dockerfile
       context: ./webapp
-    volumes: 
+    volumes:
       - /aws_app/node_modules
       - ./aws_service:/aws_app
-    environment: 
+    environment:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - MONGODB_HOST=mongodb
@@ -63,17 +63,17 @@ services:
       - mongo
       - redis
     ports:
-      - "6426:6426"
+      - '6426:6426'
   chatbot:
     build:
       dockerfile: Dockerfile
       context: ./chatbot
-    volumes: 
+    volumes:
       - /chatbot/node_modules
       - ./chatbot:/chatbot
 
     ports:
-      - "5002:5002"
+      - '5002:5002'
   aws_testrunner:
     depends_on:
       - mongo
@@ -81,10 +81,10 @@ services:
     build:
       dockerfile: Dockerfile
       context: ./aws_service
-    volumes: 
+    volumes:
       - /aws_app/node_modules
       - ./aws_service:/aws_app
-    environment: 
+    environment:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - MONGODB_HOST=mongodb
@@ -95,9 +95,9 @@ services:
       - mongo
       - redis
     ports:
-      - "6000:6000"
+      - '6000:5000'
 
-  nginx: 
+  nginx:
     depends_on:
       - aws_service
       - client
@@ -105,8 +105,8 @@ services:
       - webapp
       - chatbot
     restart: always
-    build: 
+    build:
       dockerfile: Dockerfile
       context: ./nginx
     ports:
-      - "8080:80"
+      - '8080:80'
