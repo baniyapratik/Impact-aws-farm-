@@ -7,11 +7,13 @@ const projectController = {};
 
 projectController.createProject = async (req, res) => {
   try {
+    console.log(keys);
     const config = {
       region: 'us-west-2',
-      accessKeyId: keys.AWS_ACCESS_KEY,
-      secretAccessKey: keys.AWS_SECRET_ACCESS_KEY,
+      accessKeyId: keys.accessKeyId,
+      secretAccessKey: keys.secretAccessKey,
     };
+    console.log(config);
     const devicefarm = new aws.DeviceFarm(config);
     const projectRequest = req.body;
     const params = {
@@ -99,11 +101,11 @@ projectController.updateProject = async (req, res) => {
 
 projectController.getS3 = async (req, res) => {
   try {
-    const S3_BUCKET = process.env.BUCKET;
+    const S3_BUCKET = keys.S3Store;
     const config = {
       region: 'us-east-2',
-      accessKeyId: process.env.AWS_ACCESS_KEY,
-      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+      accessKeyId: keys.accessKeyId,
+      secretAccessKey: keys.secretAccessKey,
       Bucket: S3_BUCKET,
     };
 

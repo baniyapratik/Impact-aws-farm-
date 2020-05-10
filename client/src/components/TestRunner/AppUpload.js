@@ -13,6 +13,7 @@ class AppUpload extends Component {
       contentType: '',
       appInfoReceived: false,
       inProgress: false,
+      project: this.props,
     };
     this.handleUploadFile = this.handleUploadFile.bind(this);
   }
@@ -22,26 +23,25 @@ class AppUpload extends Component {
     data.append('file', event.target.files[0]);
     console.log(event.target.files[0].name);
     this.setState({ inProgress: true });
+    data.append('projectarn', this.state.project.projectarn);
     // '/files' is your node.js route that triggers our middleware
-    axios
-      .post( '/aws-testrunner/createUpload', data)
-      .then((res) => {
+    axios.post('/aws-testrunner/createUpload', data).then((res) => {
+      console.log(res);
+      console.log(this.state.inProgress);
+      if (res.status === 200) {
         console.log(res);
-        console.log(this.state.inProgress);
-        if (res.status === 200) {
-          console.log(res);
-          let result = res.data;
-          this.setState({
-            appName: result.originalname,
-            mimeType: result.mimetype,
-            size: result.size,
-            contentType: result.contentType,
-            appInfoReceived: true,
-            inProgress: false,
-          });
-          this.props.tabsHandler(true);
-        }
-      });
+        let result = res.data;
+        this.setState({
+          appName: result.originalname,
+          mimeType: result.mimetype,
+          size: result.size,
+          contentType: result.contentType,
+          appInfoReceived: true,
+          inProgress: false,
+        });
+        this.props.tabsHandler(true);
+      }
+    });
   };
 
   render() {

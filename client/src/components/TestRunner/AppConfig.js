@@ -8,6 +8,7 @@ class AppUpload extends Component {
     this.state = {
       upload: false,
       testType: '',
+      project: this.props,
     };
     this.handleUploadFile = this.handleUploadFile.bind(this);
   }
@@ -30,14 +31,13 @@ class AppUpload extends Component {
     data.append('file', e.target.files[0]);
     data.append('testType', this.state.testType);
     // '/files' is your node.js route that triggers our middleware
-    axios
-      .post( '/aws-testrunner/createUpload', data)
-      .then((res) => {
-        if (res.status === 200) {
-          console.log(res);
-          this.props.tabsHandler(true);
-        }
-      });
+    data.append('projectarn', this.state.project.projectarn);
+    axios.post('/aws-testrunner/createUpload', data).then((res) => {
+      if (res.status === 200) {
+        console.log(res);
+        this.props.tabsHandler(true);
+      }
+    });
   };
 
   render() {

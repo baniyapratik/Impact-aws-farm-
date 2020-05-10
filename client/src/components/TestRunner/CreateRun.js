@@ -52,7 +52,10 @@ class CreateTest extends Component {
             </Modal.Header>
             <Modal.Body>
               <div>
-                <VerticalTabs closeModal={this.closeModal} />
+                <VerticalTabs
+                  closeModal={this.closeModal}
+                  {...this.state.project}
+                />
               </div>
             </Modal.Body>
           </Modal>

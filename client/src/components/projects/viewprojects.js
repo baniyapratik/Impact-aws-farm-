@@ -46,6 +46,7 @@ class ViewProjects extends Component {
               testers: element.testers,
               requiredtesters: element.requiredtesters,
               artifacts: element.artifacts,
+              projectarn: element.projectarn,
             };
           });
           this.setState({

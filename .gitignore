@@ -6,8 +6,12 @@
 /aws_service/node_modules
 /client/node_modules
 /node_modules
+/.history
 /*.pnp
 /*.pnp.js
+/*.zip
+*.xml
+*.zip
 
 # testing
 /coverage

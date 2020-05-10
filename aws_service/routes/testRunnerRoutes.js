@@ -10,15 +10,14 @@ const multerS3 = require('multer-s3');
 const request = require('request');
 const path = require('path');
 const fs = require('fs');
-const key = require('./../config/keys');
 const postmanRequest = require('postman-request');
+const key = require('./../config/keys');
 const EasyZip = require('easy-zip').EasyZip;
 const zip5 = new EasyZip();
 const sleep = (waitTimeInMs) =>
   new Promise((resolve) => setTimeout(resolve, waitTimeInMs));
-//will be replaced by create project (when integrated)
-const projectArn =
-  'arn:aws:devicefarm:us-west-2:501375891658:project:a1492621-3550-4b69-990b-72657904499a';
+let projectArn;
+let runName;
 
 const upload = multer({
   storage: multerS3({
@@ -77,7 +76,7 @@ async function getAppUpload(uploadArn, userId, uname) {
                 testres.url = res.url;
                 testres.status = res.status;
                 testres.created = res.created;
-                console.log(test);
+                console.log('Testpackage Details : ' + test);
                 test.save((err) => {
                   if (err) console.log(err, err.stack);
                   else
@@ -101,16 +100,16 @@ router.post(
   '/aws-testrunner/createUpload',
   upload.single('file'),
   (req, res) => {
-    console.log('Inside createUpload');
     const file = req.file; // file passed from client
     let userId = 'Jack';
     let fileExtension = path.extname(file.originalname);
     console.log(file);
-
+    projectArn = req.body.projectarn;
     let fileType = null;
     if (fileExtension == '.apk') {
       fileType = 'ANDROID_APP';
       req.session.runName = file.originalname;
+      runName = file.originalname;
     } else if (fileExtension == '.ipa') {
       fileType = 'IOS_APP';
       req.session.runName = file.originalname;
@@ -118,18 +117,16 @@ router.post(
       fileType = req.body.testType + '_TEST_PACKAGE';
     }
 
+    console.log('Run name is ' + req.session.runName);
     var params = {
       name: file.key,
       type: fileType,
-      projectArn:
-        'arn:aws:devicefarm:us-west-2:424030922106:project:444ce17f-5ad8-476c-ae2a-d78111377b5c',
+      projectArn: projectArn,
     };
 
     deviceFarm.createUpload(params, function (err, data) {
-      if (err) {
-        console.log('Error in deviceFarm');
-        console.log(err, err.stack);
-      } else {
+      if (err) console.log(err, err.stack);
+      else {
         console.log(data);
         let uploadStatus = data.upload.status;
         let uploadArn = data.upload.arn;
@@ -161,8 +158,9 @@ router.post(
                   let getUploadStatus = await getAppUpload(
                     uploadArn,
                     userId,
-                    req.session.runName
+                    runName
                   );
+                  console.log('Run name is ' + runName);
                   while (getUploadStatus !== 'SUCCEEDED') {
                     console.log(
                       'Re-attempt get upload status: ' + getUploadStatus
@@ -171,8 +169,9 @@ router.post(
                     getUploadStatus = await getAppUpload(
                       uploadArn,
                       userId,
-                      req.session.runName
+                      runName
                     );
+                    console.log('Run name is ' + runName);
                   }
                   res.status(200).send(file);
                 } else {
@@ -193,12 +192,10 @@ async function getDevicePools(runName) {
     .promise()
     .then(
       async function (data) {
-        //res.status(200).send("Devices listed!");
         await Upload.findOne({ appName: runName }, (err, app) => {
           if (err) console.log(err, err.stack);
           else if (app) {
             console.log(data);
-            //default TOP-devices for now, user may create custom later
             app.deviceArn = data.devicePools[0].arn;
             app.save((err) => {
               if (err) console.log(err, err.stack);
@@ -220,6 +217,7 @@ async function scheduleRun(runName) {
   await Upload.findOne({ appName: runName }, (err, run) => {
     if (err) console.log(err, err.stack);
     else if (run) {
+      console.log(run);
       var testType = run.testPackage.type.replace('_TEST_PACKAGE', '');
       var params = {
         name: run.appName,
@@ -314,7 +312,7 @@ async function getRunArtifacts2(runArn) {
 }
 
 async function importArtifactToRP2(urlArray, dir) {
-  let directory = './' + dir;
+  let directory = __dirname + dir;
   fs.mkdirSync(directory);
   var stream = new Promise((resolve, reject) => {
     urlArray.forEach(function (url, index) {
@@ -439,13 +437,16 @@ async function importArtifactsToRP(url, filename) {
 }*/
 
 router.post('/aws-testrunner/run', async (req, res) => {
-  let getDeviceStatus = await getDevicePools(req.session.runName);
+  console.log('Inside run route');
+  console.log(runName);
+
+  let getDeviceStatus = await getDevicePools(runName);
   while (getDeviceStatus !== 'SUCCEEDED') {
     console.log('Re-attempt get device status: ' + getDeviceStatus);
     await sleep(5000);
-    getDeviceStatus = await getDevicePools(req.session.runName);
+    getDeviceStatus = await getDevicePools(runName);
   }
-  scheduleRun(req.session.runName);
+  scheduleRun(runName);
 });
 
 router.get('/aws-testrunner/listruns', (req, res) => {
@@ -457,7 +458,6 @@ router.get('/aws-testrunner/listruns', (req, res) => {
 
 router.get('/aws-testrunner/getrun/*', (req, res) => {
   let runArn = Object.values(req.params)[0];
-  console.log(runArn);
   deviceFarm.getRun({ arn: runArn }, function (err, data) {
     if (err) console.log(err, err.stack);
     else res.status(200).send(data);
