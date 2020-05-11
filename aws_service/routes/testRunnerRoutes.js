@@ -1,5 +1,6 @@
 const express = require('express');
 const Upload = require('../models/TestRunnerSchema/Upload');
+//const TestResult = require('../models/TestRunnerSchema/TestResult');
 const deviceFarm = require('../services/deviceFarm');
 const resourceTagging = require('../services/resourceTagging');
 const s3 = require('../services/s3');
@@ -10,10 +11,11 @@ const request = require('request');
 const path = require('path');
 const fs = require('fs');
 const postmanRequest = require('postman-request');
+const key = require('./../config/keys');
 const EasyZip = require('easy-zip').EasyZip;
 const zip5 = new EasyZip();
-const key = require('./../config/keys');
-const sleep = (waitTimeInMs) => new Promise(resolve => setTimeout(resolve, waitTimeInMs));
+const sleep = (waitTimeInMs) =>
+  new Promise((resolve) => setTimeout(resolve, waitTimeInMs));
 let projectArn;
 let runName;
 
@@ -54,7 +56,7 @@ async function getAppUpload(uploadArn, userId, uname) {
               appStatus: res.status,
               appCreated: res.created,
               ownerId: userId,
-              runName: uname
+              runName: uname,
             });
             appUpload.save((err) => {
               if (err) console.log(err, err.stack);
@@ -108,13 +110,16 @@ router.post(
     let fileType = null;
     if (fileExtension == '.apk') {
       fileType = 'ANDROID_APP';
-      runName = file.originalname + Date.now();
+      req.session.runName = file.originalname;
+      runName = file.originalname + new Date().toISOString();
     } else if (fileExtension == '.ipa') {
       fileType = 'IOS_APP';
+      req.session.runName = file.originalname;
     } else {
       fileType = req.body.testType + '_TEST_PACKAGE';
     }
 
+    console.log('Run name  outside the s3 call is :: ------ ' + runName);
     var params = {
       name: file.key,
       type: fileType,
@@ -157,7 +162,10 @@ router.post(
                     userId,
                     runName
                   );
-                  console.log('Run name is ' + runName);
+                  console.log(
+                    'Run name  inside the s3 call before the while loop is :: ------  ' +
+                      runName
+                  );
                   while (getUploadStatus !== 'SUCCEEDED') {
                     console.log(
                       'Re-attempt get upload status: ' + getUploadStatus
@@ -168,7 +176,10 @@ router.post(
                       userId,
                       runName
                     );
-                    console.log('Run name is ' + runName);
+                    console.log(
+                      'Run name  inside the s3 call inside the while loop is :: ------  ' +
+                        runName
+                    );
                   }
                   res.status(200).send(file);
                 } else {
