@@ -12,6 +12,7 @@ const fs = require('fs');
 const postmanRequest = require('postman-request');
 const EasyZip = require('easy-zip').EasyZip;
 const zip5 = new EasyZip();
+const key = require('./../config/keys');
 const sleep = (waitTimeInMs) => new Promise(resolve => setTimeout(resolve, waitTimeInMs));
 let projectArn;
 let runName;
