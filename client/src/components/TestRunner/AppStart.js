@@ -9,7 +9,9 @@ class AppStart extends Component {
   }
 
   handleRunTest = (e) => {
-    axios.post('/api/aws-testrunner/run', null).then((response) => {
+    let request = {};
+    request.runName = localStorage.getItem('runName');
+    axios.post('/api/aws-testrunner/run', request).then((response) => {
       console.log(response); // do something with the response
     });
     this.props.handleModal();

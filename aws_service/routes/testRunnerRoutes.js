@@ -107,6 +107,7 @@ router.post(
     let fileExtension = path.extname(file.originalname);
     console.log(file);
     projectArn = req.body.projectarn;
+    runName = req.body.runName;
     let fileType = null;
     if (fileExtension == '.apk') {
       fileType = 'ANDROID_APP';
@@ -181,7 +182,10 @@ router.post(
                         runName
                     );
                   }
-                  res.status(200).send(file);
+                  res.status(200).send({
+                    file: file,
+                    runName: runName,
+                  });
                 } else {
                   console.log(error);
                 }
@@ -446,6 +450,7 @@ async function importArtifactsToRP(url, filename) {
 
 router.post('/aws-testrunner/run', async (req, res) => {
   console.log('Inside run route');
+  runName = req.body.runName;
   console.log(runName);
 
   let getDeviceStatus = await getDevicePools(runName);

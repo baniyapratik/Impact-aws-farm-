@@ -14,6 +14,7 @@ class AppUpload extends Component {
       appInfoReceived: false,
       inProgress: false,
       project: this.props,
+      runName: '',
     };
     this.handleUploadFile = this.handleUploadFile.bind(this);
   }
@@ -30,7 +31,7 @@ class AppUpload extends Component {
       console.log(this.state.inProgress);
       if (res.status === 200) {
         console.log(res);
-        let result = res.data;
+        let result = res.data.file;
         this.setState({
           appName: result.originalname,
           mimeType: result.mimetype,
@@ -38,7 +39,9 @@ class AppUpload extends Component {
           contentType: result.contentType,
           appInfoReceived: true,
           inProgress: false,
+          runName: res.data.runName,
         });
+        localStorage.setItem('runName', res.data.runName);
         this.props.tabsHandler(true);
       }
     });
