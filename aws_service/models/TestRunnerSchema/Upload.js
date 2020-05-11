@@ -38,7 +38,8 @@ const uploadSchema = new Schema({
         type: String,
         default: null
     },
-    ownerId: String
+    ownerId: String,
+    runName: String
 });
 
 module.exports = Upload = mongoose.model("upload", uploadSchema);

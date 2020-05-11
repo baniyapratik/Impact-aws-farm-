@@ -1,6 +1,5 @@
 const express = require('express');
 const Upload = require('../models/TestRunnerSchema/Upload');
-//const TestResult = require('../models/TestRunnerSchema/TestResult');
 const deviceFarm = require('../services/deviceFarm');
 const resourceTagging = require('../services/resourceTagging');
 const s3 = require('../services/s3');
@@ -11,11 +10,9 @@ const request = require('request');
 const path = require('path');
 const fs = require('fs');
 const postmanRequest = require('postman-request');
-const key = require('./../config/keys');
 const EasyZip = require('easy-zip').EasyZip;
 const zip5 = new EasyZip();
-const sleep = (waitTimeInMs) =>
-  new Promise((resolve) => setTimeout(resolve, waitTimeInMs));
+const sleep = (waitTimeInMs) => new Promise(resolve => setTimeout(resolve, waitTimeInMs));
 let projectArn;
 let runName;
 
@@ -56,6 +53,7 @@ async function getAppUpload(uploadArn, userId, uname) {
               appStatus: res.status,
               appCreated: res.created,
               ownerId: userId,
+              runName: uname
             });
             appUpload.save((err) => {
               if (err) console.log(err, err.stack);
@@ -66,7 +64,7 @@ async function getAppUpload(uploadArn, userId, uname) {
             });
           } else {
             //update current upload of test package
-            Upload.findOne({ appName: uname }, (err, test) => {
+            Upload.findOne({ runName: uname }, (err, test) => {
               if (err) console.log(err, err.stack);
               else if (test) {
                 const testres = test.testPackage;
@@ -109,16 +107,13 @@ router.post(
     let fileType = null;
     if (fileExtension == '.apk') {
       fileType = 'ANDROID_APP';
-      req.session.runName = file.originalname;
-      runName = file.originalname + new Date().toISOString();
+      runName = file.originalname + Date.now();
     } else if (fileExtension == '.ipa') {
       fileType = 'IOS_APP';
-      req.session.runName = file.originalname;
     } else {
       fileType = req.body.testType + '_TEST_PACKAGE';
     }
 
-    console.log('Run name is ' + req.session.runName);
     var params = {
       name: file.key,
       type: fileType,
