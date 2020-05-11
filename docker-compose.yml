@@ -1,16 +1,16 @@
-version: '3'
+version: "3"
 services:
   mongo:
-    image: 'mongo'
+    image: "mongo"
     restart: always
     ports:
-      - '27017:27017'
+      - "27017:27017"
 
   redis:
-    image: 'redis:latest'
+    image: "redis:latest"
     restart: always
     ports:
-      - '6379:6379'
+      - "6379:6379"
 
   client:
     build:
@@ -19,6 +19,8 @@ services:
     volumes:
       - /app/node_modules
       - ./client:/app
+    environment:
+      - CHOKIDAR_USEPOLLING=true
 
   aws_service:
     depends_on:
@@ -41,7 +43,7 @@ services:
       - mongo
       - redis
     ports:
-      - '5000:5000'
+      - "5000:5000"
   webapp:
     depends_on:
       - mongo
@@ -63,7 +65,7 @@ services:
       - mongo
       - redis
     ports:
-      - '6426:6426'
+      - "6426:6426"
   chatbot:
     build:
       dockerfile: Dockerfile
@@ -73,7 +75,7 @@ services:
       - ./chatbot:/chatbot
 
     ports:
-      - '5002:5002'
+      - "5002:5002"
 
   nginx:
     depends_on:
@@ -86,4 +88,4 @@ services:
       dockerfile: Dockerfile
       context: ./nginx
     ports:
-      - '8080:80'
+      - "8080:80"
