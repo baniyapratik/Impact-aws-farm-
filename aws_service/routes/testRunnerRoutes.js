@@ -189,7 +189,7 @@ async function getDevicePools(runName) {
     .promise()
     .then(
       async function (data) {
-        await Upload.findOne({ appName: runName }, (err, app) => {
+        await Upload.findOne({ runName: runName }, (err, app) => {
           if (err) console.log(err, err.stack);
           else if (app) {
             console.log(data);
@@ -211,7 +211,7 @@ async function getDevicePools(runName) {
 }
 
 async function scheduleRun(runName) {
-  await Upload.findOne({ appName: runName }, (err, run) => {
+  await Upload.findOne({ runName: runName }, (err, run) => {
     if (err) console.log(err, err.stack);
     else if (run) {
       console.log(run);
