@@ -10,12 +10,13 @@ class ListRuns extends Component {
     this.state = {
       runs: [],
       pendingStatus: false,
+      project: this.props,
     };
   }
 
   componentDidMount() {
     axios
-      .get('/api/aws-testrunner/listruns')
+      .get(`/api/aws-testrunner/listruns/${this.state.project.projectarn}`)
       .then((res) => {
         if (res.data.runs[0].status !== 'COMPLETED') {
           this.state.pendingStatus = true;

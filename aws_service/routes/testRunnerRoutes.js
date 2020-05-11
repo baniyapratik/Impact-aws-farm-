@@ -462,7 +462,8 @@ router.post('/aws-testrunner/run', async (req, res) => {
   scheduleRun(runName);
 });
 
-router.get('/aws-testrunner/listruns', (req, res) => {
+router.get('/aws-testrunner/listruns/:projectarn', (req, res) => {
+  projectArn = req.params.projectarn;
   deviceFarm.listRuns({ arn: projectArn }, function (err, data) {
     if (err) console.log(err, err.stack);
     else res.status(200).send(data);

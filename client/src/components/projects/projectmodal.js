@@ -93,6 +93,13 @@ class ProjectModal extends Component {
             <Tab eventKey="Tests" title="Tests" disabled={!isEnrolled}>
               <RunTests {...this.state.project}></RunTests>
             </Tab>
+            <Tab
+              eventKey="TestStatus"
+              title="TestStatus"
+              disabled={!isEnrolled}
+            >
+              <ListRuns {...this.state.project}></ListRuns>
+            </Tab>
           </Tabs>
         </>
       );
