@@ -7,6 +7,7 @@ import UploadFile from './uploadfile';
 import ProjectTesters from './projecttesters';
 import ProjectAnalytics from './projectanalytics';
 import RunTests from './runtests';
+import ListRuns from './../TestRunner/ListRuns';
 
 class ProjectModal extends Component {
   constructor(props) {
