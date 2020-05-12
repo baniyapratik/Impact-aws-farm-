@@ -4,6 +4,7 @@ import * as routes from './../authentication/constants/routes';
 import CanvasJSReact from '../../assets/canvasjs.react';
 import { Table, Button, Alert } from 'react-bootstrap';
 
+const CanvasJS = CanvasJSReact.CanvasJS;
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 class GetRun extends Component {
@@ -14,6 +15,13 @@ class GetRun extends Component {
       pieChart: {},
       arn: this.props.arn,
     };
+    CanvasJS.addColorSet('greenShades', [
+      '#2F4F4F',
+      '#008080',
+      '#2E8B57',
+      '#3CB371',
+      '#90EE90',
+    ]);
   }
 
   componentDidMount() {
@@ -25,7 +33,10 @@ class GetRun extends Component {
       .get('/api/aws-testrunner/getrun/' + arn)
       .then((res) => {
         this.setState({
-          pieChart: { dataPoints: [{ y: 5, label: 'b' }] },
+          pieChart: {
+            dataPoints: [{ y: 5, label: 'b' }],
+            colorSet: 'greenShades',
+          },
           run: res.data,
         });
       })
@@ -43,7 +54,10 @@ class GetRun extends Component {
       .get('/api/aws-testrunner/getrun/' + arn)
       .then((res) => {
         this.setState({
-          pieChart: { dataPoints: [{ y: 5, label: 'b' }] },
+          pieChart: {
+            dataPoints: [{ y: 5, label: 'b' }],
+            colorSet: 'greenShades',
+          },
           run: res.data,
         });
       })
